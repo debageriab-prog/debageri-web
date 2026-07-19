@@ -2,7 +2,8 @@ name: Preview Deploy
 
 on:
   push:
-    branches: ["cursor/**"]
+    branches-ignore:
+      - main
 
 concurrency:
   group: preview-${{ github.ref }}
@@ -29,9 +30,10 @@ jobs:
       - name: Derive preview tag from branch name
         id: tag
         run: |
-          # e.g. cursor/homepage-redesign-1dbc → homepage-redesign
+          # Normalise any branch name to a valid Cloud Run tag (max 20 chars,
+          # lowercase letters, digits and hyphens only, no trailing hyphen).
           BRANCH="${GITHUB_REF_NAME}"
-          SLUG=$(echo "$BRANCH" | sed 's|cursor/||' | sed 's|[^a-z0-9-]|-|g' | cut -c1-20 | sed 's/-$//')
+          SLUG=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed 's|[^a-z0-9]|-|g' | cut -c1-20 | sed 's/-*$//')
           echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
           echo "Preview tag: $SLUG"
 
