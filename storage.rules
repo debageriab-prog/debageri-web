@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Resumes ─────────────────────────────────────────────────────────────
+    // All resume access goes through the server (Firebase Admin SDK).
+    // No client — authenticated or not — can read or write directly.
+    // Uploads are handled by an API Route Handler using the Admin SDK.
+    // Downloads are signed URLs with short expiry, generated server-side.
+
+    match /resumes/{applicationId}/{fileName} {
+      allow read, write: if false;
+    }
+
+    // ── Deny everything else ─────────────────────────────────────────────────
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
