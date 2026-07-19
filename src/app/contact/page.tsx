@@ -18,10 +18,10 @@ export default function ContactPage() {
           <p className="mt-6 text-lg leading-relaxed text-[#7a5e4a]">
             Get in touch at{" "}
             <a
-              href="mailto:hello@debageri.se"
+              href="mailto:info@debageri.se"
               className="font-medium text-[#3D3027] underline underline-offset-2 hover:text-[#5a4535]"
             >
-              hello@debageri.se
+              info@debageri.se
             </a>
             .
           </p>
