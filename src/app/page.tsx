@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { LogoMark } from "@/components/Logo";
@@ -256,6 +257,7 @@ const TEAM = [
   {
     name: "Shahab Bagheri",
     initials: "SB",
+    photo: "/team/shahab.jpg",
     role: "CEO & Senior Java Developer",
     location: "Gothenburg, Sweden",
     current: "Currently at Zenseact",
@@ -264,6 +266,7 @@ const TEAM = [
   {
     name: "Vahid Bafghi",
     initials: "VB",
+    photo: "/team/vahid.jpg",
     role: "Embedded Software Developer",
     location: "Gothenburg, Sweden",
     current: "Currently at Zenseact",
@@ -292,10 +295,15 @@ function TeamSection() {
                 <div className="h-1 bg-gradient-to-r from-[#c4a98e] to-[#9a7a63]" />
                 <div className="p-7">
                   <div className="flex items-center gap-4 mb-5">
-                    <div className="w-14 h-14 rounded-full bg-[#3D3027] flex items-center justify-center flex-shrink-0">
-                      <span className="text-base font-semibold text-[#F7F2EA] tracking-wide">
-                        {member.initials}
-                      </span>
+                    <div className="w-14 h-14 rounded-full bg-[#3D3027] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      <Image
+                        src={member.photo}
+                        alt={member.name}
+                        width={56}
+                        height={56}
+                        className="w-full h-full object-cover"
+                        onError={undefined}
+                      />
                     </div>
                     <div>
                       <p className="font-semibold text-[#3D3027]">{member.name}</p>
