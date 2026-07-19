@@ -32,7 +32,7 @@ export default function Header() {
     >
       <div className="mx-auto max-w-6xl px-6 flex items-center justify-between gap-8">
         {/* Logo — mark acts as the "D" in DEBAGERI */}
-        <LogoLink size={scrolled ? 28 : 34} />
+        <LogoLink height={scrolled ? 22 : 28} />
 
         {/* Desktop nav */}
         <nav aria-label="Primary navigation" className="hidden md:flex flex-1 justify-center items-center gap-7">
