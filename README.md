@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Debageri Web
 
-## Getting Started
+Public website and admin panel for [Debageri AB](https://debageri.se) — a Swedish IT consultancy based in Gothenburg.
 
-First, run the development server:
+## Prerequisites
+
+| Tool | Version |
+|------|---------|
+| Node.js | ≥ 20 LTS |
+| npm | ≥ 10 |
+
+## Local setup
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/debageriab-prog/debageri-web.git
+cd debageri-web
+
+# 2. Install dependencies
+npm install
+
+# 3. Configure environment variables
+cp .env.example .env.local
+# Edit .env.local and fill in the values
+
+# 4. Start the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server with hot reload |
+| `npm run build` | Build for production |
+| `npm start` | Start the production server |
+| `npm run lint` | Run ESLint |
+| `npm run typecheck` | Run TypeScript type checker |
 
-## Learn More
+## Architecture
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/            Next.js App Router — pages and layouts
+  components/     Shared UI components
+  lib/            Utilities, Firebase client/admin modules (planned)
+  types/          Shared TypeScript types (planned)
+docs/
+  architecture.md Full architecture overview
+  branding.md     Design language and colour palette
+  design.md       Detailed design system docs
+  firestore-schema.md  Firestore data model
+  roadmap.md      Feature roadmap by phase
+  security.md     Security requirements and rules
+.github/
+  workflows/      GitHub Actions CI
+  ISSUE_TEMPLATE/ GitHub issue templates
+  PULL_REQUEST_TEMPLATE.md
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Framework: **Next.js** with App Router · **TypeScript** strict · **Tailwind CSS v4** · **ESLint**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Planned backend: Firebase Authentication, Cloud Firestore, Firebase Storage, Firebase App Check.
 
-## Deploy on Vercel
+Planned hosting: Vercel.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Roadmap (summary)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Phase | Scope |
+|-------|-------|
+| 1 — Foundation | Project setup, homepage shell ✅ |
+| 2 — Public pages | About, Team, Careers, Job detail, Application form |
+| 3 — Firebase | Auth, Firestore rules, Storage rules, App Check |
+| 4 — Admin panel | Job CRUD, applicant management, status workflow |
+| 5 — Production | Domain, email notifications, monitoring, accessibility audit |
+
+See `docs/roadmap.md` for details.
+
+## Deployment
+
+The project is designed for deployment on **Vercel**:
+
+1. Connect the repository to a Vercel project.
+2. Set all `NEXT_PUBLIC_FIREBASE_*` and server-side Firebase variables in Vercel Environment Variables.
+3. Do **not** commit `.env.local` or any service-account JSON.
+
+## Contributing
+
+See `AGENTS.md` for coding conventions and AI-assistant guidelines.
+Use [conventional commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`.
