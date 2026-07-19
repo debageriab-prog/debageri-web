@@ -19,10 +19,10 @@ export default function CareersPage() {
             We&apos;re not actively hiring right now, but we&apos;re always
             interested in talking to great engineers. Reach out at{" "}
             <a
-              href="mailto:hello@debageri.se"
+              href="mailto:info@debageri.se"
               className="font-medium text-[#3D3027] underline underline-offset-2 hover:text-[#5a4535]"
             >
-              hello@debageri.se
+              info@debageri.se
             </a>
             .
           </p>

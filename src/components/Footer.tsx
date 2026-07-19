@@ -22,15 +22,15 @@ export default function Footer() {
             <div className="text-sm text-[#7a5e4a] space-y-0.5">
               <p className="font-medium text-[#3D3027]">Debageri AB</p>
               <p>Gothenburg, Sweden</p>
-              <p>Org.nr: 559594-5023</p>
+              <p>Org.nr: 559555-8429</p>
             </div>
             <div className="flex items-center gap-3">
               <a
-                href="mailto:hello@debageri.se"
+                href="mailto:info@debageri.se"
                 className="text-sm text-[#7a5e4a] hover:text-[#3D3027] transition-colors"
                 aria-label="Email Debageri"
               >
-                hello@debageri.se
+                info@debageri.se
               </a>
             </div>
             <div className="flex items-center gap-3">
