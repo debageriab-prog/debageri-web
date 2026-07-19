@@ -1,14 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="#3D3027"/>
-  <ellipse cx="16" cy="18" rx="6" ry="7" fill="#F7F2EA"/>
-  <circle cx="16" cy="10" r="3" fill="#F7F2EA"/>
-  <line x1="13.5" y1="7.5" x2="10.5" y2="4.5" stroke="#F7F2EA" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="18.5" y1="7.5" x2="21.5" y2="4.5" stroke="#F7F2EA" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="10" y1="15" x2="7" y2="13" stroke="#F7F2EA" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="10" y1="18" x2="7" y2="18" stroke="#F7F2EA" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="10" y1="21" x2="7" y2="23" stroke="#F7F2EA" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="22" y1="15" x2="25" y2="13" stroke="#F7F2EA" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="22" y1="18" x2="25" y2="18" stroke="#F7F2EA" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="22" y1="21" x2="25" y2="23" stroke="#F7F2EA" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="16" y1="12" x2="16" y2="25" stroke="#3D3027" stroke-width="1.2" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Background -->
+  <rect width="100" height="100" rx="18" fill="#F7F2EA"/>
+  <!-- Antenna stem -->
+  <line x1="50" y1="12" x2="50" y2="28" stroke="#3D3027" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Antenna branches -->
+  <line x1="50" y1="17" x2="38" y2="9" stroke="#3D3027" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="50" y1="17" x2="62" y2="9" stroke="#3D3027" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="37" cy="8" r="2.5" fill="#3D3027"/>
+  <circle cx="63" cy="8" r="2.5" fill="#3D3027"/>
+  <!-- Circle outline -->
+  <circle cx="50" cy="62" r="34" stroke="#3D3027" stroke-width="2.2"/>
+  <!-- Center divider -->
+  <line x1="50" y1="28" x2="50" y2="96" stroke="#3D3027" stroke-width="1.8"/>
+  <!-- Circuit traces left -->
+  <line x1="50" y1="44" x2="24" y2="44" stroke="#3D3027" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="50" y1="56" x2="20" y2="56" stroke="#3D3027" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="50" y1="68" x2="18" y2="68" stroke="#3D3027" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="50" y1="80" x2="22" y2="80" stroke="#3D3027" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="24" y1="44" x2="24" y2="56" stroke="#3D3027" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="20" y1="56" x2="20" y2="68" stroke="#3D3027" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="32" y1="56" x2="32" y2="80" stroke="#3D3027" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="24" cy="44" r="2.5" fill="#3D3027"/>
+  <circle cx="24" cy="56" r="2.5" fill="#3D3027"/>
+  <circle cx="20" cy="68" r="2.5" fill="#3D3027"/>
+  <circle cx="32" cy="56" r="2.5" fill="#3D3027"/>
+  <circle cx="32" cy="80" r="2.5" fill="#3D3027"/>
+  <!-- Leaf shapes right -->
+  <path d="M50 86 Q70 82 74 72 Q70 68 50 72 Z" stroke="#3D3027" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+  <path d="M50 76 Q72 68 78 58 Q72 54 50 60 Z" stroke="#3D3027" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+  <path d="M50 64 Q74 56 80 44 Q72 40 50 48 Z" stroke="#3D3027" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+  <path d="M50 52 Q68 44 72 36 Q64 32 50 38 Z" stroke="#3D3027" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
 </svg>
