@@ -18,7 +18,7 @@ export default function Footer() {
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           {/* Brand */}
           <div className="flex flex-col gap-4 max-w-xs">
-            <LogoLink iconSize={28} />
+            <LogoLink size={28} />
             <div className="text-sm text-[#7a5e4a] space-y-0.5">
               <p className="font-medium text-[#3D3027]">Debageri AB</p>
               <p>Gothenburg, Sweden</p>
