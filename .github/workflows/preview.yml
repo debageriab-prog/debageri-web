@@ -1,0 +1,103 @@
+name: Preview Deploy
+
+on:
+  push:
+    branches: ["cursor/**"]
+
+concurrency:
+  group: preview-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: ${{ secrets.GCP_REGION }}
+  SERVICE: debageri-web
+  REGISTRY: ${{ secrets.GCP_REGION }}-docker.pkg.dev
+
+jobs:
+  preview:
+    name: Build · Push · Preview
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Derive preview tag from branch name
+        id: tag
+        run: |
+          # e.g. cursor/homepage-redesign-1dbc → homepage-redesign
+          BRANCH="${GITHUB_REF_NAME}"
+          SLUG=$(echo "$BRANCH" | sed 's|cursor/||' | sed 's|[^a-z0-9-]|-|g' | cut -c1-20 | sed 's/-$//')
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "Preview tag: $SLUG"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_FIREBASE_API_KEY="${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}" \
+            --build-arg NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}" \
+            --build-arg NEXT_PUBLIC_FIREBASE_PROJECT_ID="${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}" \
+            --build-arg NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET="${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}" \
+            --build-arg NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID="${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}" \
+            --build-arg NEXT_PUBLIC_FIREBASE_APP_ID="${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}" \
+            -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/debageri/${{ env.SERVICE }}:preview-${{ steps.tag.outputs.slug }} \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/debageri/${{ env.SERVICE }}:preview-${{ steps.tag.outputs.slug }}
+
+      - name: Deploy preview revision (no traffic)
+        run: |
+          gcloud run deploy ${{ env.SERVICE }} \
+            --image=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/debageri/${{ env.SERVICE }}:preview-${{ steps.tag.outputs.slug }} \
+            --region=${{ env.REGION }} \
+            --platform=managed \
+            --no-traffic \
+            --tag=${{ steps.tag.outputs.slug }} \
+            --port=8080 \
+            --memory=512Mi \
+            --cpu=1 \
+            --set-env-vars="NODE_ENV=production" \
+            --set-secrets="\
+              FIREBASE_SERVICE_ACCOUNT_JSON=FIREBASE_SERVICE_ACCOUNT_JSON:latest,\
+              NEXT_PUBLIC_FIREBASE_API_KEY=NEXT_PUBLIC_FIREBASE_API_KEY:latest,\
+              NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:latest,\
+              NEXT_PUBLIC_FIREBASE_PROJECT_ID=NEXT_PUBLIC_FIREBASE_PROJECT_ID:latest,\
+              NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET:latest,\
+              NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:latest,\
+              NEXT_PUBLIC_FIREBASE_APP_ID=NEXT_PUBLIC_FIREBASE_APP_ID:latest" \
+            --quiet
+
+      - name: Print preview URL
+        run: |
+          echo ""
+          echo "┌─────────────────────────────────────────────────────────────┐"
+          echo "│  Preview URL                                                 │"
+          echo "│                                                               │"
+          PREVIEW_URL=$(gcloud run services describe ${{ env.SERVICE }} \
+            --region=${{ env.REGION }} \
+            --format="value(status.traffic)" \
+            2>/dev/null || true)
+          URL="https://${{ steps.tag.outputs.slug }}---$(gcloud run services describe ${{ env.SERVICE }} --region=${{ env.REGION }} --format='value(status.url)' | sed 's|https://||')"
+          echo "│  $URL"
+          echo "│                                                               │"
+          echo "│  Production is NOT affected. This is a zero-traffic preview. │"
+          echo "└─────────────────────────────────────────────────────────────┘"
+          echo ""
+          echo "preview_url=$URL" >> "$GITHUB_OUTPUT"
