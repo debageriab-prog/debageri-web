@@ -1,0 +1,58 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ────────────────────────────────────────────────────
+
+    // Verify the caller has a valid session cookie verified server-side.
+    // Admin access is enforced in API routes via Firebase Admin SDK.
+    // These rules are the last line of defence — never rely on them alone.
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isValidApplication(data) {
+      return data.keys().hasAll([
+          'jobId', 'jobTitle', 'applicantName', 'applicantEmail',
+          'message', 'resumeStoragePath', 'resumeFileName',
+          'status', 'createdAt', 'updatedAt'
+        ])
+        && data.applicantName is string && data.applicantName.size() > 0
+        && data.applicantEmail is string && data.applicantEmail.matches('.*@.*\\..*')
+        && data.message is string
+        && data.status == 'new';
+    }
+
+    // ── jobs ────────────────────────────────────────────────────────────────
+    // Public: read published jobs only.
+    // Write: admin only.
+
+    match /jobs/{jobId} {
+      allow read: if resource.data.status == 'published';
+      allow write: if isAdmin();
+    }
+
+    // ── applications ────────────────────────────────────────────────────────
+    // Create: anyone can submit (validated).
+    // Read / update / delete: admin only — never publicly readable.
+
+    match /applications/{applicationId} {
+      allow create: if isValidApplication(request.resource.data);
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── admins ──────────────────────────────────────────────────────────────
+    // Read / write: admin only.
+
+    match /admins/{uid} {
+      allow read, write: if isAdmin();
+    }
+
+    // ── Deny everything else ────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
