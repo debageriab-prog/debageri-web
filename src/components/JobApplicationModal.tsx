@@ -1,15 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type DragEvent, type FormEvent } from "react";
 import { getAppCheckToken } from "@/lib/firebase/client";
 import type { ApplicationFieldErrors } from "@/types/application";
 
-const COUNTRY_CODES = [
-  ["Sweden", "+46"], ["Norway", "+47"], ["Denmark", "+45"], ["Finland", "+358"],
-  ["Germany", "+49"], ["United Kingdom", "+44"], ["United States / Canada", "+1"],
-  ["India", "+91"], ["Iran", "+98"],
+const COUNTRIES = [
+  { name: "Sweden", code: "+46", flag: "🇸🇪" },
+  { name: "Norway", code: "+47", flag: "🇳🇴" },
+  { name: "Denmark", code: "+45", flag: "🇩🇰" },
+  { name: "Finland", code: "+358", flag: "🇫🇮" },
+  { name: "Germany", code: "+49", flag: "🇩🇪" },
+  { name: "United Kingdom", code: "+44", flag: "🇬🇧" },
+  { name: "United States / Canada", code: "+1", flag: "🇺🇸" },
+  { name: "India", code: "+91", flag: "🇮🇳" },
+  { name: "Iran", code: "+98", flag: "🇮🇷" },
 ] as const;
+
+const ACCEPTED_RESUMES = ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
 export function JobApplicationModal({ jobId, jobTitle }: { jobId: string; jobTitle: string }) {
   const [open, setOpen] = useState(false);
@@ -26,7 +34,8 @@ export function JobApplicationModal({ jobId, jobTitle }: { jobId: string; jobTit
   }, [open]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setSubmitting(true); setErrors({}); setFormError("");
+    event.preventDefault();
+    setSubmitting(true); setErrors({}); setFormError("");
     const form = event.currentTarget;
     const body = new FormData(form);
     body.set("jobId", jobId);
@@ -45,26 +54,51 @@ export function JobApplicationModal({ jobId, jobTitle }: { jobId: string; jobTit
   function close() { setOpen(false); setComplete(false); setErrors({}); setFormError(""); }
 
   return <>
-    <button type="button" onClick={() => setOpen(true)} className="inline-flex flex-none items-center justify-center rounded-lg bg-[#3D3027] px-6 py-2.5 text-sm font-semibold text-[#F7F2EA] hover:bg-[#5a4535]">Apply now</button>
-    <dialog ref={dialogRef} onCancel={(event) => { event.preventDefault(); close(); }} onClose={() => setOpen(false)} className="m-auto max-h-[92vh] w-[min(94vw,720px)] overflow-y-auto rounded-2xl border border-[#e8d8c8] bg-[#fdfaf6] p-0 text-[#3D3027] shadow-2xl backdrop:bg-[#2a1f16]/55">
-      <div className="sticky top-0 z-10 flex items-start justify-between gap-5 border-b border-[#e8d8c8] bg-[#fdfaf6] px-6 py-5 sm:px-8">
-        <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9a7a63]">Apply for</p><h2 className="mt-1 text-2xl font-semibold tracking-tight">{jobTitle}</h2><p className="mt-1 font-mono text-xs text-[#9a7a63]">{jobId}</p></div>
-        <button type="button" onClick={close} aria-label="Close application form" className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-[#e8d8c8] text-xl text-[#7a5e4a] hover:bg-[#F7F2EA]">×</button>
+    <button type="button" onClick={() => setOpen(true)} className="group inline-flex flex-none items-center justify-center gap-2 rounded-full bg-[#3D3027] px-6 py-3 text-sm font-semibold text-[#F7F2EA] shadow-[0_8px_24px_rgba(61,48,39,0.18)] transition-all hover:-translate-y-0.5 hover:bg-[#5a4535] hover:shadow-[0_12px_28px_rgba(61,48,39,0.24)]">Apply now <span className="transition-transform group-hover:translate-x-0.5" aria-hidden="true">→</span></button>
+    <dialog ref={dialogRef} onCancel={(event) => { event.preventDefault(); close(); }} onClose={() => setOpen(false)} className="m-auto max-h-[94vh] w-[min(95vw,760px)] overflow-y-auto rounded-[1.75rem] border border-[#c4a98e] bg-[#fdfaf6] p-0 text-[#3D3027] shadow-[0_30px_90px_rgba(42,31,22,0.32)] backdrop:bg-[#2a1f16]/60 backdrop:backdrop-blur-sm">
+      <div className="relative overflow-hidden bg-[#3D3027] px-6 py-7 text-[#F7F2EA] sm:px-9 sm:py-9">
+        <div className="pointer-events-none absolute -right-12 -top-14 h-44 w-44 rounded-full border border-[#c4a98e]/25"/><div className="pointer-events-none absolute -right-2 top-8 h-24 w-24 rounded-full border border-[#c4a98e]/20"/>
+        <div className="relative flex items-start justify-between gap-5"><div><p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#c4a98e]">Your next chapter</p><h2 className="mt-2 max-w-xl text-2xl font-semibold tracking-tight sm:text-3xl">Apply for {jobTitle}</h2><div className="mt-4 flex items-center gap-2 text-xs text-[#c4a98e]"><span className="rounded-full border border-[#c4a98e]/30 px-2.5 py-1 font-mono">{jobId}</span><span>Usually takes 3 minutes</span></div></div><button type="button" onClick={close} aria-label="Close application form" className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-[#c4a98e]/30 text-xl text-[#F7F2EA] transition-colors hover:bg-[#F7F2EA]/10">×</button></div>
       </div>
-      {complete ? <div className="px-8 py-20 text-center" role="status"><div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#dce8dc] text-2xl text-[#476047]">✓</div><h3 className="mt-6 text-2xl font-semibold">Application received.</h3><p className="mx-auto mt-3 max-w-md leading-relaxed text-[#7a5e4a]">Thank you for applying. We will review your experience and contact you if there is a match.</p><button type="button" onClick={close} className="mt-7 rounded-lg bg-[#3D3027] px-6 py-3 text-sm font-semibold text-[#F7F2EA]">Close</button></div> :
-      <form onSubmit={submit} noValidate className="px-6 py-7 sm:px-8">
-        <div className="grid gap-5 sm:grid-cols-2"><Input id={`${jobId}-firstName`} name="firstName" label="First name" autoComplete="given-name" error={errors.firstName}/><Input id={`${jobId}-lastName`} name="lastName" label="Last name" autoComplete="family-name" error={errors.lastName}/><Input id={`${jobId}-email`} name="email" label="Email" type="email" autoComplete="email" error={errors.email}/><div><label htmlFor={`${jobId}-phone`} className="mb-2 block text-sm font-semibold">Phone number</label><div className="grid grid-cols-[145px_1fr] gap-2"><select name="phoneCountry" aria-label="Country calling code" defaultValue="+46" className={fieldClass(Boolean(errors.phoneCountry))}>{COUNTRY_CODES.map(([country, code]) => <option key={country} value={code}>{country} {code}</option>)}</select><input id={`${jobId}-phone`} name="phoneNumber" type="tel" autoComplete="tel-national" placeholder="70 123 45 67" className={fieldClass(Boolean(errors.phoneNumber))}/></div><ErrorText error={errors.phoneCountry ?? errors.phoneNumber}/></div></div>
-        <div className="mt-5"><Input id={`${jobId}-linkedinUrl`} name="linkedinUrl" label="LinkedIn URL" type="url" autoComplete="url" placeholder="https://www.linkedin.com/in/your-name" error={errors.linkedinUrl}/></div>
-        <div className="mt-5"><label htmlFor={`${jobId}-resume`} className="mb-2 block text-sm font-semibold">Resume</label><input id={`${jobId}-resume`} name="resume" type="file" required accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="w-full rounded-lg border border-[#e8d8c8] bg-[#F7F2EA] px-4 py-3 text-sm file:mr-4 file:rounded-full file:border-0 file:bg-[#e8d8c8] file:px-4 file:py-2 file:font-semibold file:text-[#5a4535]"/><p className="mt-2 text-xs text-[#9a7a63]">PDF, DOC, or DOCX · maximum 5 MB</p><ErrorText error={errors.resume}/></div>
-        <div className="mt-6 space-y-4 border-t border-[#e8d8c8] pt-6"><Consent name="privacyConsent" error={errors.privacyConsent}>I have read and agree to the <Link href="/privacy" target="_blank" className="font-semibold underline underline-offset-2">privacy policy</Link>.</Consent><Consent name="dataProcessingConsent" error={errors.dataProcessingConsent}>I agree that Debageri AB may store and process my personal data for this job application.</Consent></div>
-        {formError && <p role="alert" className="mt-5 rounded-lg border border-[#d8b9a3] bg-[#f7ebe2] px-4 py-3 text-sm text-[#6f3e2d]">{formError}</p>}
-        <div className="mt-7 flex justify-end"><button type="submit" disabled={submitting} className="rounded-lg bg-[#3D3027] px-7 py-3 text-sm font-semibold text-[#F7F2EA] hover:bg-[#5a4535] disabled:opacity-60">{submitting ? "Submitting…" : "Submit application"}</button></div>
+      {complete ? <SuccessState close={close}/> :
+      <form onSubmit={submit} noValidate className="px-6 py-7 sm:px-9 sm:py-9">
+        <FormSection number="01" title="A little about you" description="The essentials, so we know who we are speaking with.">
+          <div className="grid gap-5 sm:grid-cols-2"><Input id={`${jobId}-firstName`} name="firstName" label="First name" autoComplete="given-name" error={errors.firstName}/><Input id={`${jobId}-lastName`} name="lastName" label="Last name" autoComplete="family-name" error={errors.lastName}/><Input id={`${jobId}-email`} name="email" label="Email" type="email" autoComplete="email" error={errors.email}/><PhoneField jobId={jobId} countryError={errors.phoneCountry} phoneError={errors.phoneNumber}/></div>
+          <div className="mt-5"><Input id={`${jobId}-linkedinUrl`} name="linkedinUrl" label="LinkedIn profile" type="url" autoComplete="url" placeholder="linkedin.com/in/your-name" error={errors.linkedinUrl}/></div>
+        </FormSection>
+        <div className="my-8 h-px bg-[#e8d8c8]"/>
+        <FormSection number="02" title="Share your experience" description="Drop your resume here and we will take it from there."><ResumeDropzone jobId={jobId} error={errors.resume}/></FormSection>
+        <div className="my-8 h-px bg-[#e8d8c8]"/>
+        <FormSection number="03" title="Your privacy" description="Clear consent, with no small-print surprises.">
+          <div className="space-y-3"><Consent name="privacyConsent" error={errors.privacyConsent}>I have read and agree to the <Link href="/privacy" target="_blank" className="font-semibold underline decoration-[#c4a98e] underline-offset-2">privacy policy</Link>.</Consent><Consent name="dataProcessingConsent" error={errors.dataProcessingConsent}>I agree that Debageri AB may store and process my personal data for this job application.</Consent></div>
+        </FormSection>
+        {formError && <p role="alert" className="mt-6 rounded-xl border border-[#d8b9a3] bg-[#f7ebe2] px-4 py-3 text-sm text-[#6f3e2d]">{formError}</p>}
+        <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between"><p className="text-xs text-[#9a7a63]">Your information is sent securely.</p><button type="submit" disabled={submitting} className="inline-flex min-w-48 items-center justify-center gap-2 rounded-full bg-[#3D3027] px-7 py-3.5 text-sm font-semibold text-[#F7F2EA] shadow-[0_8px_22px_rgba(61,48,39,0.18)] transition-all hover:bg-[#5a4535] disabled:cursor-not-allowed disabled:opacity-60">{submitting ? "Submitting…" : <>Send application <span aria-hidden="true">→</span></>}</button></div>
       </form>}
     </dialog>
   </>;
 }
 
+function PhoneField({ jobId, countryError, phoneError }: { jobId: string; countryError?: string; phoneError?: string }) {
+  const [country, setCountry] = useState<(typeof COUNTRIES)[number]>(COUNTRIES[0]);
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  return <div><label htmlFor={`${jobId}-phone`} className="mb-2 block text-sm font-semibold">Phone number</label><div className="flex gap-2"><details ref={detailsRef} className="relative"><summary aria-label={`Country code: ${country.name} ${country.code}`} className={`${fieldClass(Boolean(countryError))} flex h-full min-w-28 cursor-pointer list-none items-center justify-between gap-2 [&::-webkit-details-marker]:hidden`}><span aria-hidden="true" className="text-lg leading-none">{country.flag}</span><span className="font-medium">{country.code}</span><span className="text-xs text-[#9a7a63]" aria-hidden="true">▾</span></summary><div className="absolute left-0 top-[calc(100%+0.5rem)] z-30 max-h-64 w-72 overflow-y-auto rounded-xl border border-[#d9c5b2] bg-[#fdfaf6] p-1.5 shadow-[0_18px_50px_rgba(61,48,39,0.18)]">{COUNTRIES.map((item) => <button key={item.name} type="button" onClick={() => { setCountry(item); detailsRef.current?.removeAttribute("open"); }} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors hover:bg-[#F7F2EA]"><span className="text-xl" aria-hidden="true">{item.flag}</span><span className="flex-1 font-medium">{item.name}</span><span className="text-[#9a7a63]">{item.code}</span></button>)}</div></details><input type="hidden" name="phoneCountry" value={country.code}/><input id={`${jobId}-phone`} name="phoneNumber" type="tel" required autoComplete="tel-national" placeholder="70 123 45 67" className={`${fieldClass(Boolean(phoneError))} min-w-0 flex-1`}/></div><ErrorText error={countryError ?? phoneError}/></div>;
+}
+
+function ResumeDropzone({ jobId, error }: { jobId: string; error?: string }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [dragging, setDragging] = useState(false);
+  function receiveFile(nextFile: File | undefined) { if (!nextFile) return; setFile(nextFile); if (inputRef.current) { const transfer = new DataTransfer(); transfer.items.add(nextFile); inputRef.current.files = transfer.files; } }
+  function drop(event: DragEvent<HTMLLabelElement>) { event.preventDefault(); setDragging(false); receiveFile(event.dataTransfer.files[0]); }
+  return <div><label htmlFor={`${jobId}-resume`} onDragEnter={(event) => { event.preventDefault(); setDragging(true); }} onDragOver={(event) => event.preventDefault()} onDragLeave={() => setDragging(false)} onDrop={drop} className={`group flex cursor-pointer flex-col items-center rounded-2xl border-2 border-dashed px-6 py-9 text-center transition-all ${dragging ? "border-[#7a5e4a] bg-[#e8d8c8]/55" : error ? "border-[#b66a50] bg-[#f7ebe2]/40" : "border-[#c4a98e] bg-[#F7F2EA] hover:border-[#9a7a63] hover:bg-[#f3eadf]"}`}><span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e8d8c8] text-[#5a4535] transition-transform group-hover:-translate-y-1"><UploadIcon/></span>{file ? <><span className="mt-4 max-w-full truncate font-semibold text-[#3D3027]">{file.name}</span><span className="mt-1 text-xs text-[#9a7a63]">{formatBytes(file.size)} · Click or drop another file to replace</span></> : <><span className="mt-4 font-semibold text-[#3D3027]">Drop your resume here</span><span className="mt-1 text-sm text-[#7a5e4a]">or <span className="font-semibold underline decoration-[#c4a98e] underline-offset-2">choose a file</span> from your device</span><span className="mt-3 text-xs text-[#9a7a63]">PDF, DOC, or DOCX · maximum 5 MB</span></>}<input ref={inputRef} id={`${jobId}-resume`} name="resume" type="file" required accept={ACCEPTED_RESUMES} onChange={(event) => receiveFile(event.target.files?.[0])} className="sr-only"/></label><ErrorText error={error}/></div>;
+}
+
+function FormSection({ number, title, description, children }: { number: string; title: string; description: string; children: React.ReactNode }) { return <section><div className="mb-5 flex items-start gap-3"><span className="mt-0.5 font-mono text-xs font-semibold text-[#9a7a63]">{number}</span><div><h3 className="font-semibold text-[#3D3027]">{title}</h3><p className="mt-0.5 text-sm text-[#9a7a63]">{description}</p></div></div>{children}</section>; }
+function SuccessState({ close }: { close: () => void }) { return <div className="px-8 py-20 text-center" role="status"><div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#dce8dc] text-2xl text-[#476047]">✓</div><p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[#9a7a63]">Application sent</p><h3 className="mt-2 text-3xl font-semibold tracking-tight">Now leave the rest to us.</h3><p className="mx-auto mt-3 max-w-md leading-relaxed text-[#7a5e4a]">Thank you for applying. We will review your experience and contact you if there is a match.</p><button type="button" onClick={close} className="mt-8 rounded-full bg-[#3D3027] px-7 py-3 text-sm font-semibold text-[#F7F2EA]">Back to opportunities</button></div>; }
 function Input({ id, name, label, type = "text", error, ...props }: { id: string; name: string; label: string; type?: string; error?: string; autoComplete?: string; placeholder?: string }) { return <div><label htmlFor={id} className="mb-2 block text-sm font-semibold">{label}</label><input id={id} name={name} type={type} required maxLength={254} aria-invalid={Boolean(error)} className={fieldClass(Boolean(error))} {...props}/><ErrorText error={error}/></div>; }
-function Consent({ name, error, children }: { name: string; error?: string; children: React.ReactNode }) { return <div><label className="flex items-start gap-3 text-sm leading-relaxed text-[#5a4535]"><input name={name} type="checkbox" required className="mt-1 h-4 w-4 accent-[#3D3027]"/><span>{children}</span></label><ErrorText error={error}/></div>; }
+function Consent({ name, error, children }: { name: string; error?: string; children: React.ReactNode }) { return <div className={`rounded-xl border p-4 ${error ? "border-[#b66a50] bg-[#f7ebe2]/45" : "border-[#e8d8c8] bg-[#F7F2EA]"}`}><label className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-[#5a4535]"><input name={name} type="checkbox" required className="mt-0.5 h-5 w-5 flex-none accent-[#3D3027]"/><span>{children}</span></label><ErrorText error={error}/></div>; }
 function ErrorText({ error }: { error?: string }) { return error ? <p className="mt-2 text-sm text-[#8a4934]">{error}</p> : null; }
-function fieldClass(error: boolean) { return `w-full rounded-lg border bg-[#F7F2EA] px-4 py-3 text-base outline-none focus:border-[#9a7a63] ${error ? "border-[#b66a50]" : "border-[#e8d8c8]"}`; }
+function fieldClass(error: boolean) { return `w-full rounded-xl border bg-[#F7F2EA] px-4 py-3 text-base outline-none transition-all placeholder:text-[#b89880] focus:bg-[#fdfaf6] focus:shadow-[0_0_0_3px_rgba(196,169,142,0.2)] ${error ? "border-[#b66a50]" : "border-[#e8d8c8] focus:border-[#9a7a63]"}`; }
+function formatBytes(bytes: number) { return bytes < 1024 * 1024 ? `${Math.ceil(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`; }
+function UploadIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 15.5v2.75A1.75 1.75 0 0 0 6.75 20h10.5A1.75 1.75 0 0 0 19 18.25V15.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
