@@ -16,6 +16,7 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
             <nav aria-label="Admin navigation" className="flex items-center gap-4 sm:gap-5">
               <Link href="/admin/messages" className="text-sm font-semibold text-[#5a4535] hover:text-[#3D3027]">Messages</Link>
               <Link href="/admin/jobs" className="text-sm font-semibold text-[#5a4535] hover:text-[#3D3027]">Jobs</Link>
+              <Link href="/admin/candidates" className="text-sm font-semibold text-[#5a4535] hover:text-[#3D3027]">Candidates</Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">

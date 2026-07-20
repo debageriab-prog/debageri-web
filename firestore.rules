@@ -13,18 +13,6 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    function isValidApplication(data) {
-      return data.keys().hasAll([
-          'jobId', 'jobTitle', 'applicantName', 'applicantEmail',
-          'message', 'resumeStoragePath', 'resumeFileName',
-          'status', 'createdAt', 'updatedAt'
-        ])
-        && data.applicantName is string && data.applicantName.size() > 0
-        && data.applicantEmail is string && data.applicantEmail.matches('.*@.*\\..*')
-        && data.message is string
-        && data.status == 'new';
-    }
-
     // ── jobs ────────────────────────────────────────────────────────────────
     // Public: read published jobs only.
     // Write: admin only.
@@ -35,12 +23,10 @@ service cloud.firestore {
     }
 
     // ── applications ────────────────────────────────────────────────────────
-    // Create: anyone can submit (validated).
-    // Read / update / delete: admin only — never publicly readable.
+    // All access goes through server Route Handlers using the Admin SDK.
 
     match /applications/{applicationId} {
-      allow create: if isValidApplication(request.resource.data);
-      allow read, update, delete: if isAdmin();
+      allow read, write: if false;
     }
 
     // ── contact messages ──────────────────────────────────────────────────

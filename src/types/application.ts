@@ -1,33 +1,45 @@
-import type { Timestamp } from "firebase/firestore";
+export const APPLICATION_STATUSES = [
+  "new",
+  "interesting",
+  "interview",
+  "offer",
+  "rejected",
+] as const;
 
-export type ApplicationStatus =
-  | "new"
-  | "reviewing"
-  | "interview"
-  | "technical_interview"
-  | "offer"
-  | "hired"
-  | "rejected"
-  | "withdrawn";
-
-export interface InternalNote {
-  id: string;
-  text: string;
-  createdAt: Timestamp;
-  createdBy: string;
-}
+export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
 export interface Application {
   id: string;
   jobId: string;
   jobTitle: string;
-  applicantName: string;
-  applicantEmail: string;
-  message: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneCountry: string;
+  phoneNumber: string;
+  linkedinUrl: string;
   resumeStoragePath: string;
   resumeFileName: string;
+  resumeContentType: string;
+  privacyConsent: true;
+  dataProcessingConsent: true;
+  consentedAt: Date;
   status: ApplicationStatus;
-  internalNotes: InternalNote[];
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: Date;
+  updatedAt: Date;
+  statusUpdatedAt: Date | null;
+  statusUpdatedBy: string | null;
 }
+
+export type ApplicationField =
+  | "firstName"
+  | "lastName"
+  | "email"
+  | "phoneCountry"
+  | "phoneNumber"
+  | "linkedinUrl"
+  | "resume"
+  | "privacyConsent"
+  | "dataProcessingConsent";
+
+export type ApplicationFieldErrors = Partial<Record<ApplicationField, string>>;
