@@ -9,7 +9,7 @@
 | Styling | Tailwind CSS v4 | `@theme` tokens in `globals.css` |
 | Linting | ESLint 9 + `eslint-config-next` | `eslint.config.mjs` |
 | Auth (planned) | Firebase Authentication | Email/password for admin |
-| Database (planned) | Cloud Firestore | Collections: jobs, applications, admins |
+| Database | Cloud Firestore | Collections: jobs, applications, admins, contactMessages |
 | Storage (planned) | Firebase Storage | Resume uploads |
 | App protection (planned) | Firebase App Check | Enforced before production |
 | Email (planned) | TBD | Notification on new application |
@@ -82,3 +82,11 @@ debageri-web/
 3. Route Handler validates file type, size, and creates the `applications` Firestore document.
 4. Admin receives email notification (planned).
 5. Admin views application in `/admin/applicants`, changes status, adds notes.
+
+## Contact message flow
+
+1. The browser obtains a Firebase App Check token and posts the form to `/api/contact`.
+2. The Route Handler verifies App Check, validates the payload and checks the honeypot.
+3. The Firebase Admin SDK writes an `unread` message with a 12-month expiry.
+4. An authenticated admin views messages under `/admin/messages`.
+5. Opening a message marks it read; the admin can then mark it replied or ignored.

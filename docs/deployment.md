@@ -145,6 +145,7 @@ Add all as **Repository secrets**:
 | `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Firebase web app config |
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase web app config |
 | `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase web app config |
+| `NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY` | Firebase App Check reCAPTCHA v3 provider |
 | `FIREBASE_SERVICE_ACCOUNT_JSON` | Full contents of the Firebase Admin JSON (Step 3) |
 
 ---
@@ -208,6 +209,26 @@ firebase use your-project-id
 firebase deploy --only firestore:rules
 firebase deploy --only storage:rules
 ```
+
+Deploy the contact-message index at the same time as the Firestore rules:
+
+```bash
+firebase deploy --only firestore:rules,firestore:indexes
+```
+
+## Configure contact messages and the first admin
+
+Before enabling the contact form in production:
+
+1. In Firebase App Check, register the web app with a reCAPTCHA v3 provider and
+   add its site key as `NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY` in
+   GitHub Actions and Secret Manager.
+2. In Firestore, enable a TTL policy for the `contactMessages` collection group
+   using the `expiresAt` field.
+3. In Firebase Authentication, enable Email/Password and create the first admin user.
+4. Copy that user's UID and create `admins/{uid}` in Firestore with `email`,
+   `displayName`, and a `createdAt` timestamp. There is intentionally no public
+   admin-registration endpoint.
 
 You can also add this as a GitHub Actions step if you want rules to deploy automatically on merge.
 

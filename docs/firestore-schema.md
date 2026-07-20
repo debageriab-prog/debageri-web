@@ -95,6 +95,34 @@ interface Admin {
 
 ---
 
+### `contactMessages`
+
+Stores inquiries submitted from the public contact form. All access goes through
+server code using the Firebase Admin SDK; browser Firestore clients have no access.
+
+```ts
+interface ContactMessage {
+  id: string;
+  fullName: string;
+  email: string;                 // Trimmed and lowercased
+  message: string;
+  status: "unread" | "read" | "replied" | "ignored";
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  statusUpdatedAt: Timestamp | null;
+  statusUpdatedBy: string | null; // Admin UID
+  expiresAt: Timestamp;           // createdAt + 12 months
+}
+```
+
+**Security and retention:**
+- Direct client reads and writes are denied.
+- Public submissions are validated and App Check verified by `/api/contact`.
+- Admin reads and status changes require a verified session cookie.
+- Firestore TTL must be enabled on `expiresAt` for automatic deletion.
+
+---
+
 ## Indexes
 
 Planned composite indexes:
@@ -104,6 +132,7 @@ Planned composite indexes:
 | `jobs` | `status`, `publishedAt` | `publishedAt DESC` | Public job listing |
 | `applications` | `jobId`, `createdAt` | `createdAt DESC` | Admin applicant view per job |
 | `applications` | `status`, `createdAt` | `createdAt DESC` | Admin filtering by status |
+| `contactMessages` | `status`, `createdAt` | `createdAt DESC` | Admin message status filters |
 
 ---
 

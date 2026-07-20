@@ -43,6 +43,14 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // ── contact messages ──────────────────────────────────────────────────
+    // All access goes through server Route Handlers and Server Actions using
+    // the Admin SDK. Contact details are never exposed to browser Firestore clients.
+
+    match /contactMessages/{messageId} {
+      allow read, write: if false;
+    }
+
     // ── admins ──────────────────────────────────────────────────────────────
     // Read / write: admin only.
 

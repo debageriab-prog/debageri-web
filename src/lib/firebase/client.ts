@@ -9,6 +9,12 @@ import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
 import { getAuth, type Auth } from "firebase/auth";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
+import {
+  getToken,
+  initializeAppCheck,
+  ReCaptchaV3Provider,
+  type AppCheck,
+} from "firebase/app-check";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
@@ -27,6 +33,7 @@ function getApp(): FirebaseApp {
 let _db: Firestore | null = null;
 let _auth: Auth | null = null;
 let _storage: FirebaseStorage | null = null;
+let _appCheck: AppCheck | null = null;
 
 export function getClientDb(): Firestore {
   if (!_db) _db = getFirestore(getApp());
@@ -41,4 +48,24 @@ export function getClientAuth(): Auth {
 export function getClientStorage(): FirebaseStorage {
   if (!_storage) _storage = getStorage(getApp());
   return _storage;
+}
+
+export async function getAppCheckToken(): Promise<string | null> {
+  const siteKey = process.env.NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY;
+
+  if (!siteKey) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("Firebase App Check is not configured.");
+    }
+    return null;
+  }
+
+  if (!_appCheck) {
+    _appCheck = initializeAppCheck(getApp(), {
+      provider: new ReCaptchaV3Provider(siteKey),
+      isTokenAutoRefreshEnabled: true,
+    });
+  }
+
+  return (await getToken(_appCheck)).token;
 }
