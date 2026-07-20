@@ -221,8 +221,8 @@ firebase deploy --only firestore:rules,firestore:indexes
 Before enabling the contact form in production:
 
 1. In Firebase App Check, register the web app with a reCAPTCHA v3 provider and
-   add its site key as `NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY` in
-   GitHub Actions and Secret Manager.
+   add its site key as the `NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY`
+   GitHub Actions secret. It is public configuration baked into the browser bundle.
 2. In Firestore, enable a TTL policy for the `contactMessages` collection group
    using the `expiresAt` field.
 3. In Firebase Authentication, enable Email/Password and create the first admin user.

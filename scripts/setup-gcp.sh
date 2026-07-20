@@ -74,7 +74,6 @@ store_secret NEXT_PUBLIC_FIREBASE_PROJECT_ID
 store_secret NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
 store_secret NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 store_secret NEXT_PUBLIC_FIREBASE_APP_ID
-store_secret NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY
 
 # ── 4. Grant Cloud Run service account access to secrets ─────────────────────
 echo ""
@@ -89,8 +88,7 @@ for secret in \
   NEXT_PUBLIC_FIREBASE_PROJECT_ID \
   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET \
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID \
-  NEXT_PUBLIC_FIREBASE_APP_ID \
-  NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY; do
+  NEXT_PUBLIC_FIREBASE_APP_ID; do
   gcloud secrets add-iam-policy-binding "$secret" \
     --member="serviceAccount:$CLOUD_RUN_SA" \
     --role="roles/secretmanager.secretAccessor" \
