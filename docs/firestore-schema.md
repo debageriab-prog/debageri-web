@@ -10,12 +10,9 @@ Represents a job posting. Managed by admins.
 interface Job {
   id: string;                    // Firestore document ID (slug-like)
   title: string;                 // e.g. "Senior Java Developer"
-  location: string;              // e.g. "Gothenburg, Sweden (on-site)"
-  employmentType: string;        // e.g. "Consultancy", "Full-time"
-  summary: string;               // Short description shown on listing
-  description: string;           // Full Markdown/rich text description
-  requirements: string[];        // Bullet points
-  niceToHave: string[];          // Optional bullet points
+  description: string;           // Full job-ad copy
+  cities: string[];              // One or more possible assignment cities
+  languages: string[];           // One or more working languages
   status: "draft" | "published" | "archived";
   createdAt: Timestamp;
   updatedAt: Timestamp;
