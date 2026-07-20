@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export function RichTextEditor({ value, onChange, hasError }: { value: string; onChange: (value: string) => void; hasError: boolean }) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const [initialValue] = useState(value);
 
   function command(name: string, commandValue?: string) {
     editorRef.current?.focus();
@@ -50,7 +51,7 @@ export function RichTextEditor({ value, onChange, hasError }: { value: string; o
         aria-label="Job description"
         onInput={(event) => onChange(event.currentTarget.innerHTML)}
         className="job-rich-text min-h-80 px-5 py-4 text-base leading-7 text-[#3D3027] focus:outline-none"
-        dangerouslySetInnerHTML={{ __html: value }}
+        dangerouslySetInnerHTML={{ __html: initialValue }}
       />
       <div className="border-t border-[#e8d8c8] px-4 py-2 text-xs text-[#9a7a63]">
         Paste a job ad or use the toolbar. Unsafe HTML and scripts are removed when saved.
