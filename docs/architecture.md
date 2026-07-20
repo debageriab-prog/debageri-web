@@ -90,3 +90,16 @@ debageri-web/
 3. The Firebase Admin SDK writes an `unread` message with a 12-month expiry.
 4. An authenticated admin views messages under `/admin/messages`.
 5. Opening a message marks it read; the admin can then mark it replied or ignored.
+
+## Job publishing flow
+
+1. An authenticated admin opens `/admin/jobs/new` and enters a unique job ID,
+   title, rich-text description, cities, languages, and an optional expiry time.
+2. The server verifies the admin session, validates the payload, and creates a
+   published Firestore `jobs/{jobId}` document using the Admin SDK.
+3. The public Careers page reads published jobs on the server and sorts them by
+   publication date.
+4. Candidates can search across title, ID, description, cities, and languages.
+   Applications are intentionally deferred to the next feature.
+5. Admins can edit or permanently delete an opportunity. Public reads exclude
+   jobs whose expiry time has passed.

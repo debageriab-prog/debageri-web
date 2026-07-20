@@ -22,7 +22,7 @@
 - [ ] Homepage: finalise with real content and photography
 - [ ] About page: company story, philosophy, values
 - [ ] Team page: member profiles, photos
-- [ ] Careers listing page: fetch published jobs from Firestore
+- [x] Careers listing page: searchable published jobs from Firestore
 - [ ] Job detail page: full description, requirements, apply CTA
 - [ ] Application form: name, email, message, resume upload
 - [ ] Form validation (client + server)
@@ -56,7 +56,7 @@
 - [ ] Admin login page
 - [ ] Session cookie auth (server-side)
 - [ ] Admin layout with auth guard
-- [ ] Job CRUD: create, edit, publish, archive
+- [ ] Job CRUD: create, publish, edit, expiry, and delete complete; archive remains
 - [ ] Applicant list per job
 - [ ] Application detail: status, notes, resume download
 - [ ] Status workflow (new → reviewing → interview → technical_interview → offer → hired / rejected / withdrawn)

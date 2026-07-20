@@ -1,20 +1,31 @@
-import type { Timestamp } from "firebase/firestore";
+export const JOB_STATUSES = ["draft", "published", "archived"] as const;
 
-export type JobStatus = "draft" | "published" | "archived";
+export type JobStatus = (typeof JOB_STATUSES)[number];
 
 export interface Job {
   id: string;
   title: string;
-  location: string;
-  employmentType: string;
-  summary: string;
   description: string;
-  requirements: string[];
-  niceToHave: string[];
+  descriptionText: string;
+  cities: string[];
+  languages: string[];
   status: JobStatus;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-  publishedAt: Timestamp | null;
-  archivedAt: Timestamp | null;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  archivedAt: Date | null;
+  expiresAt: Date | null;
   createdBy: string;
+  updatedBy: string | null;
 }
+
+export interface JobSubmission {
+  id: string;
+  title: string;
+  description: string;
+  cities: string[];
+  languages: string[];
+  expiresAt: string | null;
+}
+
+export type JobFieldErrors = Partial<Record<keyof JobSubmission, string>>;

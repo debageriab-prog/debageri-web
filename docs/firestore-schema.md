@@ -10,18 +10,18 @@ Represents a job posting. Managed by admins.
 interface Job {
   id: string;                    // Firestore document ID (slug-like)
   title: string;                 // e.g. "Senior Java Developer"
-  location: string;              // e.g. "Gothenburg, Sweden (on-site)"
-  employmentType: string;        // e.g. "Consultancy", "Full-time"
-  summary: string;               // Short description shown on listing
-  description: string;           // Full Markdown/rich text description
-  requirements: string[];        // Bullet points
-  niceToHave: string[];          // Optional bullet points
+  description: string;           // Sanitised rich HTML job-ad copy
+  descriptionText: string;       // Plain-text search projection
+  cities: string[];              // One or more possible assignment cities
+  languages: string[];           // One or more working languages
   status: "draft" | "published" | "archived";
   createdAt: Timestamp;
   updatedAt: Timestamp;
   publishedAt: Timestamp | null;
   archivedAt: Timestamp | null;
+  expiresAt: Timestamp | null;   // Hidden from Careers after this time
   createdBy: string;             // Admin UID
+  updatedBy: string | null;      // Last editing admin UID
 }
 ```
 

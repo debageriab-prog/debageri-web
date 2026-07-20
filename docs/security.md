@@ -90,6 +90,14 @@ Enforced server-side in the upload Route Handler:
 | File name | Sanitised before storage (no path traversal) |
 | Virus scanning | Deferred to Phase 5 (Cloud Storage scanning extension) |
 
+## Rich job descriptions
+
+- Job descriptions are sanitised on every create and edit before storage.
+- Only headings, paragraphs, basic emphasis, lists, blockquotes, safe links,
+  alignment, and restricted colours are retained.
+- Scripts, event handlers, embedded content, and unsafe URL schemes are removed
+  before HTML is rendered on the public Careers page.
+
 ---
 
 ## Admin authentication
