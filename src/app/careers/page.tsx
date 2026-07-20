@@ -20,6 +20,7 @@ export default async function CareersPage() {
     updatedAt: job.updatedAt.toISOString(),
     publishedAt: job.publishedAt?.toISOString() ?? null,
     archivedAt: job.archivedAt?.toISOString() ?? null,
+    expiresAt: job.expiresAt?.toISOString() ?? null,
   }));
 
   return (

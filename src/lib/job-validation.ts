@@ -22,6 +22,7 @@ export function validateJobSubmission(value: unknown): {
     description: stringValue(input.description),
     cities: stringList(input.cities),
     languages: stringList(input.languages),
+    expiresAt: stringValue(input.expiresAt) || null,
   };
   const errors: JobFieldErrors = {};
 
@@ -36,6 +37,9 @@ export function validateJobSubmission(value: unknown): {
   }
   if (data.cities.length === 0) errors.cities = "Add at least one city.";
   if (data.languages.length === 0) errors.languages = "Add at least one language.";
+  if (data.expiresAt && Number.isNaN(new Date(data.expiresAt).getTime())) {
+    errors.expiresAt = "Enter a valid expiry date and time.";
+  }
 
   return { data, errors };
 }

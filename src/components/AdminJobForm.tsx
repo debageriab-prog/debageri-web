@@ -3,14 +3,25 @@
 import { useState, type FormEvent, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { JobFieldErrors } from "@/types/job";
+import { RichTextEditor } from "@/components/RichTextEditor";
 
-export function AdminJobForm() {
+interface InitialJob {
+  id: string;
+  title: string;
+  description: string;
+  cities: string[];
+  languages: string[];
+  expiresAt: string;
+}
+
+export function AdminJobForm({ initialJob }: { initialJob?: InitialJob }) {
   const router = useRouter();
-  const [id, setId] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [cities, setCities] = useState<string[]>([]);
-  const [languages, setLanguages] = useState<string[]>([]);
+  const [id, setId] = useState(initialJob?.id ?? "");
+  const [title, setTitle] = useState(initialJob?.title ?? "");
+  const [description, setDescription] = useState(initialJob?.description ?? "");
+  const [cities, setCities] = useState<string[]>(initialJob?.cities ?? []);
+  const [languages, setLanguages] = useState<string[]>(initialJob?.languages ?? []);
+  const [expiresAt, setExpiresAt] = useState(initialJob?.expiresAt ?? "");
   const [fieldErrors, setFieldErrors] = useState<JobFieldErrors>({});
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,10 +33,17 @@ export function AdminJobForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/admin/jobs", {
-        method: "POST",
+      const response = await fetch(initialJob ? `/api/admin/jobs/${encodeURIComponent(initialJob.id)}` : "/api/admin/jobs", {
+        method: initialJob ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, title, description, cities, languages }),
+        body: JSON.stringify({
+          id,
+          title,
+          description,
+          cities,
+          languages,
+          expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
+        }),
       });
       const result = (await response.json()) as {
         id?: string;
@@ -38,7 +56,7 @@ export function AdminJobForm() {
         return;
       }
 
-      router.push("/admin/jobs?created=1");
+      router.push(`/admin/jobs?${initialJob ? "updated" : "created"}=1`);
       router.refresh();
     } catch {
       setFormError("The job could not be published. Please try again.");
@@ -56,6 +74,7 @@ export function AdminJobForm() {
             value={id}
             onChange={(event) => setId(event.target.value)}
             required
+            disabled={Boolean(initialJob)}
             maxLength={50}
             className={inputClass(Boolean(fieldErrors.id))}
             placeholder="JAVA-2026-01"
@@ -74,18 +93,8 @@ export function AdminJobForm() {
         </Field>
       </div>
 
-      <Field label="Job description" htmlFor="job-description" error={fieldErrors.description} help="Describe the assignment, responsibilities, and the person you are looking for.">
-        <textarea
-          id="job-description"
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-          required
-          maxLength={10_000}
-          rows={12}
-          className={`${inputClass(Boolean(fieldErrors.description))} resize-y leading-relaxed`}
-          placeholder="Tell candidates what makes this opportunity worth exploring..."
-        />
-        <p className="mt-2 text-right text-xs text-[#9a7a63]">{description.length.toLocaleString()} / 10,000</p>
+      <Field label="Job description" htmlFor="job-description-editor" error={fieldErrors.description} help="Describe the assignment, responsibilities, and the person you are looking for.">
+        <RichTextEditor value={description} onChange={setDescription} hasError={Boolean(fieldErrors.description)} />
       </Field>
 
       <div className="grid gap-6 sm:grid-cols-2">
@@ -109,6 +118,16 @@ export function AdminJobForm() {
         />
       </div>
 
+      <Field label="Expiry date" htmlFor="job-expiry" error={fieldErrors.expiresAt} help="Optional, in Sweden time. The job disappears from Careers automatically.">
+        <input
+          id="job-expiry"
+          type="datetime-local"
+          value={expiresAt}
+          onChange={(event) => setExpiresAt(event.target.value)}
+          className={inputClass(Boolean(fieldErrors.expiresAt))}
+        />
+      </Field>
+
       {formError && (
         <p role="alert" className="rounded-lg border border-[#d8b9a3] bg-[#f7ebe2] px-4 py-3 text-sm text-[#6f3e2d]">
           {formError}
@@ -122,7 +141,7 @@ export function AdminJobForm() {
           disabled={isSubmitting}
           className="rounded-lg bg-[#3D3027] px-6 py-3 text-sm font-semibold text-[#F7F2EA] transition-colors hover:bg-[#5a4535] disabled:opacity-60"
         >
-          {isSubmitting ? "Publishing…" : "Publish opportunity"}
+          {isSubmitting ? (initialJob ? "Saving…" : "Publishing…") : (initialJob ? "Save changes" : "Publish opportunity")}
         </button>
       </div>
     </form>

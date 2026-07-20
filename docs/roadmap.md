@@ -56,7 +56,7 @@
 - [ ] Admin login page
 - [ ] Session cookie auth (server-side)
 - [ ] Admin layout with auth guard
-- [ ] Job CRUD: create/publish complete; edit and archive remain
+- [ ] Job CRUD: create, publish, edit, expiry, and delete complete; archive remains
 - [ ] Applicant list per job
 - [ ] Application detail: status, notes, resume download
 - [ ] Status workflow (new → reviewing → interview → technical_interview → offer → hired / rejected / withdrawn)

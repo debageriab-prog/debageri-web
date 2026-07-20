@@ -6,6 +6,7 @@ export interface Job {
   id: string;
   title: string;
   description: string;
+  descriptionText: string;
   cities: string[];
   languages: string[];
   status: JobStatus;
@@ -13,7 +14,9 @@ export interface Job {
   updatedAt: Date;
   publishedAt: Date | null;
   archivedAt: Date | null;
+  expiresAt: Date | null;
   createdBy: string;
+  updatedBy: string | null;
 }
 
 export interface JobSubmission {
@@ -22,6 +25,7 @@ export interface JobSubmission {
   description: string;
   cities: string[];
   languages: string[];
+  expiresAt: string | null;
 }
 
 export type JobFieldErrors = Partial<Record<keyof JobSubmission, string>>;

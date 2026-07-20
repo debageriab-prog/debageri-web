@@ -7,6 +7,7 @@ interface SerializedJob {
   id: string;
   title: string;
   description: string;
+  descriptionText: string;
   cities: string[];
   languages: string[];
   status: JobStatus;
@@ -14,7 +15,9 @@ interface SerializedJob {
   updatedAt: string;
   publishedAt: string | null;
   archivedAt: string | null;
+  expiresAt: string | null;
   createdBy: string;
+  updatedBy: string | null;
 }
 
 export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
@@ -23,7 +26,7 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return jobs;
     return jobs.filter((job) =>
-      [job.id, job.title, job.description, ...job.cities, ...job.languages]
+      [job.id, job.title, job.descriptionText, ...job.cities, ...job.languages]
         .join(" ")
         .toLowerCase()
         .includes(normalized),
@@ -82,13 +85,13 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
                   </button>
                 </div>
 
-                <p className="mt-5 whitespace-pre-line text-base leading-7 text-[#7a5e4a]">{job.description}</p>
+                <div className="job-rich-text mt-5 text-base leading-7 text-[#7a5e4a]" dangerouslySetInnerHTML={{ __html: job.description }} />
 
                 <div className="mt-7 grid gap-5 border-t border-[#e8d8c8] pt-6 sm:grid-cols-2">
                   <MetaGroup label="Cities" values={job.cities} icon={<PinIcon />} />
                   <MetaGroup label="Languages" values={job.languages} icon={<LanguageIcon />} />
                 </div>
-                <p className="mt-5 text-xs text-[#9a7a63]">Applications will open soon.</p>
+                <p className="mt-5 text-xs text-[#9a7a63]">Applications will open soon.{job.expiresAt ? ` Opportunity closes ${formatDate(job.expiresAt)}.` : ""}</p>
               </article>
             </li>
           ))}

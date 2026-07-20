@@ -1,8 +1,9 @@
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/admin-session";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { validateJobSubmission } from "@/lib/job-validation";
+import { jobDescriptionToText, sanitizeJobDescription } from "@/lib/job-rich-text";
 
 const MAX_REQUEST_BYTES = 32_768;
 
@@ -22,6 +23,11 @@ export async function POST(request: Request) {
   }
 
   const { data, errors } = validateJobSubmission(body);
+  const description = sanitizeJobDescription(data.description);
+  const descriptionText = jobDescriptionToText(description);
+  if (descriptionText.length < 40) {
+    errors.description = "Enter at least 40 characters of job-description text.";
+  }
   if (Object.keys(errors).length > 0) {
     return NextResponse.json(
       { message: "Check the highlighted fields.", fieldErrors: errors },
@@ -40,7 +46,8 @@ export async function POST(request: Request) {
   try {
     await reference.create({
       title: data.title,
-      description: data.description,
+      description,
+      descriptionText,
       cities: data.cities,
       languages: data.languages,
       status: "published",
@@ -48,7 +55,9 @@ export async function POST(request: Request) {
       updatedAt: FieldValue.serverTimestamp(),
       publishedAt: FieldValue.serverTimestamp(),
       archivedAt: null,
+      expiresAt: data.expiresAt ? Timestamp.fromDate(new Date(data.expiresAt)) : null,
       createdBy: admin.uid,
+      updatedBy: null,
     });
   } catch (error) {
     console.error("Failed to publish job", error);

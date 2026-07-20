@@ -10,7 +10,8 @@ Represents a job posting. Managed by admins.
 interface Job {
   id: string;                    // Firestore document ID (slug-like)
   title: string;                 // e.g. "Senior Java Developer"
-  description: string;           // Full job-ad copy
+  description: string;           // Sanitised rich HTML job-ad copy
+  descriptionText: string;       // Plain-text search projection
   cities: string[];              // One or more possible assignment cities
   languages: string[];           // One or more working languages
   status: "draft" | "published" | "archived";
@@ -18,7 +19,9 @@ interface Job {
   updatedAt: Timestamp;
   publishedAt: Timestamp | null;
   archivedAt: Timestamp | null;
+  expiresAt: Timestamp | null;   // Hidden from Careers after this time
   createdBy: string;             // Admin UID
+  updatedBy: string | null;      // Last editing admin UID
 }
 ```
 
