@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { JobApplicationModal } from "@/components/JobApplicationModal";
 import type { JobStatus } from "@/types/job";
 
 interface SerializedJob {
@@ -106,10 +107,8 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
                   </div>
 
                   <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-xs text-[#9a7a63]">Applications will open soon.{job.expiresAt ? ` Opportunity closes ${formatDate(job.expiresAt)}.` : ""}</p>
-                    <button type="button" disabled aria-disabled="true" title="Applications are coming in the next release" className="inline-flex flex-none cursor-not-allowed items-center justify-center rounded-lg bg-[#3D3027] px-6 py-2.5 text-sm font-semibold text-[#F7F2EA] opacity-60">
-                      Apply
-                    </button>
+                    <p className="text-xs text-[#9a7a63]">{job.expiresAt ? `Applications close ${formatDate(job.expiresAt)}.` : "Applications are open until the position is filled."}</p>
+                    <JobApplicationModal jobId={job.id} jobTitle={job.title} />
                   </div>
                 </div>
               </details>

@@ -216,6 +216,16 @@ Deploy the contact-message index at the same time as the Firestore rules:
 firebase deploy --only firestore:rules,firestore:indexes
 ```
 
+The application feature also requires Firebase Storage and the private resume rules:
+
+```bash
+firebase deploy --only firestore:rules,firestore:indexes,storage
+```
+
+Submit a test application and confirm it appears at `/admin/candidates`. Signed
+resume downloads require the Cloud Run service account (or configured Firebase
+Admin credential) to have permission to sign Cloud Storage URLs.
+
 ## Configure contact messages and the first admin
 
 Before enabling the contact form in production:

@@ -10,7 +10,7 @@
 | Linting | ESLint 9 + `eslint-config-next` | `eslint.config.mjs` |
 | Auth (planned) | Firebase Authentication | Email/password for admin |
 | Database | Cloud Firestore | Collections: jobs, applications, admins, contactMessages |
-| Storage (planned) | Firebase Storage | Resume uploads |
+| Storage | Firebase Storage | Private resume uploads |
 | App protection (planned) | Firebase App Check | Enforced before production |
 | Email (planned) | TBD | Notification on new application |
 | Hosting | Vercel | Edge-optimised Next.js deployment |
@@ -77,11 +77,15 @@ debageri-web/
 
 ## Data flow for job applications
 
-1. Applicant submits form (name, email, message, resume file).
-2. Client uploads resume to Firebase Storage via a signed upload URL returned by a Route Handler.
-3. Route Handler validates file type, size, and creates the `applications` Firestore document.
-4. Admin receives email notification (planned).
-5. Admin views application in `/admin/applicants`, changes status, adds notes.
+1. Applicant submits contact details, LinkedIn URL, resume, privacy acceptance,
+   and explicit recruitment-processing consent from a Careers modal.
+2. The browser sends one App Check-protected multipart request to `/api/applications`.
+3. The server confirms the job is published and unexpired, validates all fields
+   and the 5 MB PDF/DOC/DOCX limit, then privately stores the resume and creates
+   the linked `applications` document. A failed database write removes the upload.
+4. Admins use `/admin/candidates` to see the applicant and position, update the
+   hiring status, and obtain a five-minute signed resume download URL.
+5. Email notifications and internal notes remain planned.
 
 ## Contact message flow
 
@@ -100,6 +104,6 @@ debageri-web/
 3. The public Careers page reads published jobs on the server and sorts them by
    publication date.
 4. Candidates can search across title, ID, description, cities, and languages.
-   Applications are intentionally deferred to the next feature.
+   Candidates can apply from an accessible modal on each expanded opportunity.
 5. Admins can edit or permanently delete an opportunity. Public reads exclude
    jobs whose expiry time has passed.

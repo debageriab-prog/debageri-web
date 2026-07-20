@@ -37,11 +37,12 @@ Draft and archived jobs are never readable by the public.
 ### `applications` collection
 
 ```
-allow create: if validApplication(request.resource.data);
-allow read, update, delete: if isAdmin();
+allow read, write: if false;
 ```
 
-Applications are **never** publicly readable. Even the applicant cannot read their own submission after it is created (there is no candidate portal in the current scope).
+Applications are **never** accessed directly from the browser. Public submission
+and authenticated admin operations use server code backed by the Admin SDK.
+Even the applicant cannot read their submission after creation.
 
 ### `admins` collection
 
@@ -89,6 +90,18 @@ Enforced server-side in the upload Route Handler:
 | File size | Max 5 MB |
 | File name | Sanitised before storage (no path traversal) |
 | Virus scanning | Deferred to Phase 5 (Cloud Storage scanning extension) |
+
+Resume objects are private and downloaded by admins only through signed URLs
+that expire after five minutes. If the application record cannot be created,
+the server removes its uploaded resume.
+
+## Applicant consent
+
+- Privacy-policy acceptance and explicit recruitment-processing consent are required.
+- The server records both consent flags and a server-generated consent timestamp.
+- Each record contains the exact job ID and denormalised position title.
+- Applicants can request access, correction, or deletion at `info@debageri.se`.
+- A final retention period and automated deletion policy require approval before launch.
 
 ## Rich job descriptions
 

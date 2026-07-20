@@ -24,9 +24,9 @@
 - [ ] Team page: member profiles, photos
 - [x] Careers listing page: searchable published jobs from Firestore
 - [ ] Job detail page: full description, requirements, apply CTA
-- [ ] Application form: name, email, message, resume upload
-- [ ] Form validation (client + server)
-- [ ] Success / error states
+- [x] Application form: contact details, LinkedIn, consent, and resume upload
+- [x] Form validation (browser constraints + server enforcement)
+- [x] Success / error states
 - [x] Contact page: validated form, success/error states, and email alternative
 
 ---
@@ -44,8 +44,8 @@
 - [ ] Firebase Storage rules
 - [ ] Firebase App Check (reCAPTCHA v3)
 - [x] Contact message storage and App Check verification
-- [ ] Resume upload Route Handler (signed URL or server-side)
-- [ ] Application submission Route Handler
+- [x] Private resume upload in server Route Handler
+- [x] App Check-protected application submission Route Handler
 
 ---
 
@@ -57,9 +57,9 @@
 - [ ] Session cookie auth (server-side)
 - [ ] Admin layout with auth guard
 - [ ] Job CRUD: create, publish, edit, expiry, and delete complete; archive remains
-- [ ] Applicant list per job
-- [ ] Application detail: status, notes, resume download
-- [ ] Status workflow (new → reviewing → interview → technical_interview → offer → hired / rejected / withdrawn)
+- [x] Candidate list showing the applied job and contact details
+- [x] Candidate resume download (internal notes remain planned)
+- [x] Status workflow (new → interesting → interview → offer / rejected)
 - [ ] Internal notes (append-only)
 - [x] Admin login, session protection, and contact message inbox
 
@@ -76,7 +76,7 @@
 - [ ] SEO: sitemap, robots.txt, Open Graph images
 - [ ] Performance audit (Lighthouse ≥ 90 across all categories)
 - [ ] Error monitoring (Sentry or Vercel Analytics)
-- [ ] Privacy policy and cookie notice (GDPR / Swedish law)
+- [x] Initial applicant privacy policy (legal review and cookie notice remain)
 
 ---
 

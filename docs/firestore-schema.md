@@ -40,39 +40,38 @@ interface Application {
   id: string;                    // Firestore document ID
   jobId: string;                 // Reference to jobs/{jobId}
   jobTitle: string;              // Denormalised for display
-  applicantName: string;
-  applicantEmail: string;
-  message: string;               // Cover letter / message
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneCountry: string;          // Calling code, e.g. "+46"
+  phoneNumber: string;
+  linkedinUrl: string;
   resumeStoragePath: string;     // Firebase Storage path
   resumeFileName: string;        // Original file name
+  resumeContentType: string;
+  privacyConsent: true;
+  dataProcessingConsent: true;
+  consentedAt: Timestamp;
   status: ApplicationStatus;
-  internalNotes: InternalNote[];
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  statusUpdatedAt: Timestamp | null;
+  statusUpdatedBy: string | null;
 }
 
 type ApplicationStatus =
   | "new"
-  | "reviewing"
+  | "interesting"
   | "interview"
-  | "technical_interview"
   | "offer"
-  | "hired"
-  | "rejected"
-  | "withdrawn";
-
-interface InternalNote {
-  id: string;
-  text: string;
-  createdAt: Timestamp;
-  createdBy: string;             // Admin UID
-}
+  | "rejected";
 ```
 
 **Security rules:**
 - Read: admin only — never exposed publicly
-- Write (create): any authenticated or anonymous user (application submission)
-- Write (update): admin only
+- Direct browser access: denied
+- Public create: App Check-protected server Route Handler only
+- Admin read/update: authenticated server code only
 
 ---
 
