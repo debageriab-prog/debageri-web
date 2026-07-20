@@ -51,6 +51,18 @@ allow read, write: if isAdmin();
 
 Admin status is verified server-side via the Firebase Admin SDK. The `admins` collection is never queried from the client.
 
+### `contactMessages` collection
+
+```
+allow read, write: if false;
+```
+
+- The public form posts to `/api/contact`; it never writes to Firestore directly.
+- The Route Handler verifies App Check in production, validates field lengths and
+  email format, and silently discards honeypot submissions.
+- Admin message reads and status updates use the Admin SDK only after verifying
+  the session cookie and membership in `admins/{uid}`.
+
 ---
 
 ## Firebase Storage rules
@@ -96,6 +108,8 @@ Enforced before any production deployment that exposes Firestore or Storage:
 - **Web client:** reCAPTCHA v3 provider.
 - **App Check token** required on all Firestore and Storage requests.
 - Failure to pass App Check returns a 403; no data is exposed.
+- The contact Route Handler explicitly verifies the `X-Firebase-AppCheck` token
+  before accepting a production submission.
 
 ---
 
@@ -114,3 +128,5 @@ A strict CSP will be added in Phase 5:
 - Applicant personal data is stored in Firestore and Firebase Storage.
 - Data retention policy and deletion mechanism to be designed in Phase 5.
 - Privacy policy must be published before the application form goes live.
+- Contact messages include an `expiresAt` value 12 months after submission.
+  Enable Firestore TTL on that field so expired messages are deleted automatically.

@@ -27,6 +27,7 @@
 - [ ] Application form: name, email, message, resume upload
 - [ ] Form validation (client + server)
 - [ ] Success / error states
+- [x] Contact page: validated form, success/error states, and email alternative
 
 ---
 
@@ -42,6 +43,7 @@
 - [ ] Firestore security rules
 - [ ] Firebase Storage rules
 - [ ] Firebase App Check (reCAPTCHA v3)
+- [x] Contact message storage and App Check verification
 - [ ] Resume upload Route Handler (signed URL or server-side)
 - [ ] Application submission Route Handler
 
@@ -59,6 +61,7 @@
 - [ ] Application detail: status, notes, resume download
 - [ ] Status workflow (new → reviewing → interview → technical_interview → offer → hired / rejected / withdrawn)
 - [ ] Internal notes (append-only)
+- [x] Admin login, session protection, and contact message inbox
 
 ---
 
