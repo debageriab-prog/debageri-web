@@ -1,5 +1,5 @@
 /**
- * Firebase browser SDK — safe to import from Client Components.
+ * Firebase browser SDK. Safe to import from Client Components.
  * Never import firebase-admin here.
  *
  * All NEXT_PUBLIC_FIREBASE_* variables are public by design; they are the

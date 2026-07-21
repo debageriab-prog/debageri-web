@@ -10,7 +10,7 @@ interface FadeInProps {
 
 /**
  * Fades and rises children into view when the element enters the viewport.
- * Uses IntersectionObserver — no library, no layout shift.
+ * Uses IntersectionObserver with no library or layout shift.
  * Respects prefers-reduced-motion.
  */
 export function FadeIn({ children, delay = 0, className }: FadeInProps) {

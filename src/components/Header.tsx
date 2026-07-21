@@ -31,7 +31,7 @@ export default function Header() {
       } border-b border-[#e8d8c8]`}
     >
       <div className="mx-auto max-w-6xl px-6 flex items-center justify-between gap-8">
-        {/* Logo — mark acts as the "D" in DEBAGERI */}
+        {/* The logo mark acts as the "D" in DEBAGERI. */}
         <LogoLink height={scrolled ? 22 : 28} />
 
         {/* Desktop nav */}

@@ -7,7 +7,7 @@ import { LogoMark } from "@/components/Logo";
 import { FadeIn } from "@/components/FadeIn";
 
 export const metadata: Metadata = {
-  title: "Debageri AB — IT Consultancy in Gothenburg",
+  title: "Debageri AB | IT Consultancy in Gothenburg",
 };
 
 export default function HomePage() {
@@ -32,13 +32,13 @@ export default function HomePage() {
 function HeroSection() {
   return (
     <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-[#F7F2EA]">
-      {/* Circuit background — full bleed */}
+      {/* Full-bleed circuit background */}
       <CircuitBg className="absolute inset-0 w-full h-full pointer-events-none select-none" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-16 md:pt-28 md:pb-24">
         <div className="grid md:grid-cols-[1fr_auto] gap-12 md:gap-6 items-center">
 
-          {/* Left — headline and CTAs */}
+          {/* Headline and calls to action */}
           <div className="max-w-2xl">
             <FadeIn>
               <p className="mb-5 text-xs font-semibold tracking-[0.2em] text-[#9a7a63] uppercase">
@@ -62,7 +62,7 @@ function HeroSection() {
             <FadeIn delay={160}>
               <p className="mt-7 max-w-lg text-lg leading-relaxed text-[#7a5e4a]">
                 Debageri is a Swedish IT consultancy for senior engineers.
-                We believe in freedom, trust and flexibility — you decide
+                We believe in freedom, trust and flexibility. You decide
                 how to make the most of what you earn.
               </p>
             </FadeIn>
@@ -88,7 +88,7 @@ function HeroSection() {
             </FadeIn>
           </div>
 
-          {/* Right — logo mark as hero graphic */}
+          {/* Logo mark hero graphic */}
           <FadeIn delay={120} className="hidden md:flex justify-end">
             <LogoMark size={300} className="opacity-95" />
           </FadeIn>
@@ -135,7 +135,7 @@ const WHY_CARDS = [
     icon: <WalletIcon />,
     accent: "#c4a98e",
     title: "You decide",
-    body: "Shape your compensation the way you want — salary, pension, equipment, conferences, and more.",
+    body: "Shape your compensation around what matters to you: salary, pension, equipment, conferences, and more.",
   },
   {
     icon: <ShieldIcon />,
@@ -147,13 +147,13 @@ const WHY_CARDS = [
     icon: <BookIcon />,
     accent: "#7a5e4a",
     title: "Invest in growth",
-    body: "Courses, books, certifications and conferences — we invest in your development.",
+    body: "We invest in your development through courses, books, certifications and conferences.",
   },
   {
     icon: <LaptopIcon />,
     accent: "#c4a98e",
     title: "Flexible lifestyle",
-    body: "Work the way you work best. Remote, hybrid or on-site — we're flexible.",
+    body: "Work the way you work best. We support remote, hybrid and on-site arrangements.",
   },
   {
     icon: <GroupIcon />,
@@ -205,7 +205,7 @@ function NameStorySection() {
     <section aria-labelledby="story-heading" className="bg-[#3D3027]">
       <div className="mx-auto max-w-5xl px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 md:gap-20 items-center">
 
-        {/* Left — dark panel with large logo mark as art */}
+        {/* Dark panel with large logo mark */}
         <FadeIn className="flex items-center justify-center">
           <div className="relative flex items-center justify-center w-64 h-64 md:w-80 md:h-80">
             {/* Glow ring */}
@@ -215,7 +215,7 @@ function NameStorySection() {
           </div>
         </FadeIn>
 
-        {/* Right — story text */}
+        {/* Name story */}
         <FadeIn delay={100}>
           <div className="w-10 h-px bg-[#9a7a63] mb-8" />
           <h2 id="story-heading" className="text-3xl font-semibold tracking-tight text-[#F7F2EA] md:text-4xl">
@@ -224,7 +224,7 @@ function NameStorySection() {
           <div className="mt-6 space-y-4 text-base leading-relaxed text-[#c4a98e]">
             <p>
               As developers, we all know the word debug. In Swedish,{" "}
-              <strong className="text-[#F7F2EA] font-semibold">bageri</strong> means
+              <strong className="text-[#F7F2EA] font-semibold">bageri</strong>{" "}means
               bakery, and it also happens to sound very similar to the
               founder&apos;s last name, Bagheri.
             </p>
