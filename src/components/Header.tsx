@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
-import { LogoLink } from "@/components/Logo";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -31,8 +31,16 @@ export default function Header() {
       } border-b border-[#e8d8c8]`}
     >
       <div className="mx-auto max-w-6xl px-6 flex items-center justify-between gap-8">
-        {/* The logo mark acts as the "D" in DEBAGERI. */}
-        <LogoLink height={scrolled ? 22 : 28} />
+        <Link href="/" aria-label="Debageri AB home" className="inline-flex transition-opacity hover:opacity-75">
+          <Image
+            src="/debageri.svg"
+            alt="Debageri"
+            width={135}
+            height={40}
+            priority
+            className={scrolled ? "h-[22px] w-auto" : "h-7 w-auto"}
+          />
+        </Link>
 
         {/* Desktop nav */}
         <nav aria-label="Primary navigation" className="hidden md:flex flex-1 justify-center items-center gap-7">

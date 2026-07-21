@@ -133,31 +133,26 @@ function TrustBar() {
 const WHY_CARDS = [
   {
     icon: <WalletIcon />,
-    accent: "#c4a98e",
     title: "You decide",
     body: "Shape your compensation around what matters to you: salary, pension, equipment, conferences, and more.",
   },
   {
     icon: <ShieldIcon />,
-    accent: "#9a7a63",
     title: "Built on trust",
     body: "We hire experienced engineers and give you the freedom to do what you do best.",
   },
   {
     icon: <BookIcon />,
-    accent: "#7a5e4a",
     title: "Invest in growth",
     body: "We invest in your development through courses, books, certifications and conferences.",
   },
   {
     icon: <LaptopIcon />,
-    accent: "#c4a98e",
     title: "Flexible lifestyle",
     body: "Work the way you work best. We support remote, hybrid and on-site arrangements.",
   },
   {
     icon: <GroupIcon />,
-    accent: "#9a7a63",
     title: "Small & personal",
     body: "Short decision paths, open communication and a flat structure. Just good people.",
   },
@@ -182,7 +177,6 @@ function WhySection() {
             <li key={card.title}>
               <FadeIn delay={i * 70}>
                 <div className="group h-full rounded-2xl border border-[#e8d8c8] bg-[#fdfaf6] p-6 flex flex-col gap-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-                  <div className="w-8 h-0.5 rounded-full" style={{ backgroundColor: card.accent }} />
                   <span className="text-[#7a5e4a]" aria-hidden="true">{card.icon}</span>
                   <div>
                     <p className="font-semibold text-sm text-[#3D3027] mb-1.5">{card.title}</p>
