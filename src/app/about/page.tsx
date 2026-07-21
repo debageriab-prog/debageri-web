@@ -13,17 +13,14 @@ export const metadata: Metadata = {
 
 const principles = [
   {
-    number: "01",
     title: "Trust comes first",
     body: "We hire experienced people and trust them to make good decisions. That means open communication, short paths, and room to do your best work.",
   },
   {
-    number: "02",
     title: "Freedom should be real",
     body: "Your work should support the life and career you want. We make space for flexibility, autonomy, and choices that are genuinely yours.",
   },
   {
-    number: "03",
     title: "Craft matters",
     body: "Good software is built with care. We value thoughtful engineering, continuous learning, and solutions that remain useful long after delivery.",
   },
@@ -152,12 +149,11 @@ function PrinciplesSection() {
           </h2>
         </FadeIn>
 
-        <ol className="grid gap-px overflow-hidden rounded-2xl border border-[#e8d8c8] bg-[#e8d8c8] md:grid-cols-3">
+        <ul className="grid gap-px overflow-hidden rounded-2xl border border-[#e8d8c8] bg-[#e8d8c8] md:grid-cols-3">
           {principles.map((principle, index) => (
             <li key={principle.title} className="bg-[#fdfaf6] p-7 md:p-8">
               <FadeIn delay={index * 80}>
-                <span className="font-mono text-xs text-[#9a7a63]">{principle.number}</span>
-                <h3 className="mt-8 text-xl font-semibold tracking-tight text-[#3D3027]">
+                <h3 className="text-xl font-semibold tracking-tight text-[#3D3027]">
                   {principle.title}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-[#7a5e4a]">
@@ -166,7 +162,7 @@ function PrinciplesSection() {
               </FadeIn>
             </li>
           ))}
-        </ol>
+        </ul>
       </div>
     </section>
   );

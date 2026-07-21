@@ -23,7 +23,7 @@
 - [ ] About page: company story, philosophy, values
 - [ ] Team page: member profiles, photos
 - [x] Careers listing page: searchable published jobs from Firestore
-- [ ] Job detail page: full description, requirements, apply CTA
+- [x] Shareable job detail page with full description, metadata, and apply CTA
 - [x] Application form: contact details, LinkedIn, consent, and resume upload
 - [x] Form validation (browser constraints + server enforcement)
 - [x] Success / error states

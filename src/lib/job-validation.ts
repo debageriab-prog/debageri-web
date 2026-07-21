@@ -27,7 +27,7 @@ export function validateJobSubmission(value: unknown): {
   const errors: JobFieldErrors = {};
 
   if (!JOB_ID_PATTERN.test(data.id)) {
-    errors.id = "Use 2–50 letters, numbers, underscores, or hyphens.";
+    errors.id = "Use 2 to 50 letters, numbers, underscores, or hyphens.";
   }
   if (data.title.length < 3 || data.title.length > 120) {
     errors.title = "Enter a title between 3 and 120 characters.";

@@ -36,7 +36,7 @@ export default async function CareersPage() {
                 Do work that matters.<br />Keep the freedom you earned.
               </h1>
               <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[#7a5e4a]">
-                Join a consultancy built for experienced engineers—meaningful assignments,
+                Join a consultancy built for experienced engineers, with meaningful assignments,
                 transparent compensation, and trust from day one.
               </p>
               <div className="mt-9 flex flex-wrap justify-center gap-3 text-sm text-[#5a4535]">

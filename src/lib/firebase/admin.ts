@@ -1,5 +1,5 @@
 /**
- * Firebase Admin SDK — server-only.
+ * Firebase Admin SDK. Server-only.
  * Import only from Route Handlers, Server Actions, and Server Components.
  * NEVER import this file from a Client Component or any file with "use client".
  *

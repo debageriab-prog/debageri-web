@@ -19,7 +19,8 @@ const COUNTRIES = [
 
 const ACCEPTED_RESUMES = ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
-export function JobApplicationModal({ jobId, jobTitle }: { jobId: string; jobTitle: string }) {
+export function JobApplicationModal({ jobId, jobTitle, instanceId = "primary" }: { jobId: string; jobTitle: string; instanceId?: string }) {
+  const fieldId = `${jobId}-${instanceId}`;
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [complete, setComplete] = useState(false);
@@ -63,11 +64,11 @@ export function JobApplicationModal({ jobId, jobTitle }: { jobId: string; jobTit
       {complete ? <SuccessState close={close}/> :
       <form onSubmit={submit} noValidate className="px-6 py-7 sm:px-9 sm:py-9">
         <FormSection number="01" title="A little about you" description="The essentials, so we know who we are speaking with.">
-          <div className="grid gap-5 sm:grid-cols-2"><Input id={`${jobId}-firstName`} name="firstName" label="First name" autoComplete="given-name" error={errors.firstName}/><Input id={`${jobId}-lastName`} name="lastName" label="Last name" autoComplete="family-name" error={errors.lastName}/><Input id={`${jobId}-email`} name="email" label="Email" type="email" autoComplete="email" error={errors.email}/><PhoneField jobId={jobId} countryError={errors.phoneCountry} phoneError={errors.phoneNumber}/></div>
-          <div className="mt-5"><Input id={`${jobId}-linkedinUrl`} name="linkedinUrl" label="LinkedIn profile" type="url" autoComplete="url" placeholder="linkedin.com/in/your-name" error={errors.linkedinUrl}/></div>
+          <div className="grid gap-5 sm:grid-cols-2"><Input id={`${fieldId}-firstName`} name="firstName" label="First name" autoComplete="given-name" error={errors.firstName}/><Input id={`${fieldId}-lastName`} name="lastName" label="Last name" autoComplete="family-name" error={errors.lastName}/><Input id={`${fieldId}-email`} name="email" label="Email" type="email" autoComplete="email" error={errors.email}/><PhoneField jobId={fieldId} countryError={errors.phoneCountry} phoneError={errors.phoneNumber}/></div>
+          <div className="mt-5"><Input id={`${fieldId}-linkedinUrl`} name="linkedinUrl" label="LinkedIn profile" type="url" autoComplete="url" placeholder="linkedin.com/in/your-name" error={errors.linkedinUrl}/></div>
         </FormSection>
         <div className="my-8 h-px bg-[#e8d8c8]"/>
-        <FormSection number="02" title="Share your experience" description="Drop your resume here and we will take it from there."><ResumeDropzone jobId={jobId} error={errors.resume}/></FormSection>
+        <FormSection number="02" title="Share your experience" description="Drop your resume here and we will take it from there."><ResumeDropzone jobId={fieldId} error={errors.resume}/></FormSection>
         <div className="my-8 h-px bg-[#e8d8c8]"/>
         <FormSection number="03" title="Your privacy" description="Clear consent, with no small-print surprises.">
           <div className="space-y-3"><Consent name="privacyConsent" error={errors.privacyConsent}>I have read and agree to the <Link href="/privacy" target="_blank" className="font-semibold underline decoration-[#c4a98e] underline-offset-2">privacy policy</Link>.</Consent><Consent name="dataProcessingConsent" error={errors.dataProcessingConsent}>I agree that Debageri AB may store and process my personal data for this job application.</Consent></div>

@@ -65,6 +65,16 @@ export async function getJob(id: string): Promise<Job | null> {
   return jobFromSnapshot(await getAdminDb().collection("jobs").doc(id).get());
 }
 
+export async function getPublishedJob(id: string): Promise<Job | null> {
+  const job = await getJob(id);
+  if (
+    !job ||
+    job.status !== "published" ||
+    (job.expiresAt && job.expiresAt.getTime() <= Date.now())
+  ) return null;
+  return job;
+}
+
 export async function getAllJobs(): Promise<Job[]> {
   const snapshot = await getAdminDb().collection("jobs").orderBy("createdAt", "desc").get();
   return snapshot.docs.map(jobFromSnapshot).filter((job): job is Job => job !== null);
