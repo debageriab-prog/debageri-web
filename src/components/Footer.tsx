@@ -70,10 +70,16 @@ export default function Footer() {
         </div>
 
         {/* Bottom row */}
-        <div className="mt-8 pt-6 border-t border-[#e8d8c8] flex items-center justify-between">
+        <div className="mt-8 flex items-center justify-between border-t border-[#e8d8c8] pt-6">
           <p className="text-xs text-[#9a7a63]">
             © {currentYear} Debageri AB. All rights reserved.
           </p>
+          <Link
+            href="/privacy"
+            className="text-xs text-[#7a5e4a] underline-offset-4 transition-colors hover:text-[#3D3027] hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9a7a63]"
+          >
+            Privacy policy
+          </Link>
         </div>
       </div>
     </footer>
