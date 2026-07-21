@@ -188,11 +188,128 @@ Or do it in the Cloud Run console: **Revisions** tab → select a revision → *
 
 ## Add a custom domain
 
-1. Go to [console.cloud.google.com/run](https://console.cloud.google.com/run)
-2. Click your service → **Manage custom domains** → **Add mapping**
-3. Enter your domain (e.g. `debageri.se`)
-4. Follow the DNS verification steps — add the provided records to your DNS provider
-5. Cloud Run provisions a TLS certificate automatically
+The production site uses Cloud Run domain mappings with DNS hosted at one.com.
+Map both the apex domain and `www` to the production `debageri-web` service,
+never to a branch preview service.
+
+> Cloud Run direct domain mapping is currently a Preview feature. It is the
+> simplest option for this site, but Google recommends an external Application
+> Load Balancer for production workloads that require a generally available
+> domain-routing product.
+
+### 1. Verify ownership of `debageri.se`
+
+1. Open Google Cloud Console → **Cloud Run** → **Domain mappings**.
+2. Click **Add mapping**, select the production service, and choose
+   **Verify a new domain**.
+3. Enter `debageri.se`. Google provides a TXT verification record.
+4. In one.com, open **DNS settings** → **DNS records** and add that TXT record.
+   For the root domain, leave the **Hostname** field empty.
+5. Return to Google Cloud and finish verification.
+
+The TXT record proves ownership only. It does not send web traffic to Cloud Run.
+
+### 2. Map the apex domain
+
+1. Create a domain mapping from `debageri.se` to the production service.
+2. Open the mapping's three-dot menu → **DNS Records**.
+3. In one.com, add every `A` and `AAAA` record displayed by Cloud Run. Leave
+   **Hostname** empty for each root-domain record.
+4. Remove only conflicting root website records, such as one.com's default
+   `A` record to `46.30.211.38`. Do not remove mail or unrelated subdomain records.
+
+At the time of setup, Cloud Run supplied these Google endpoints. Always prefer
+the exact values currently displayed in the Cloud Run mapping:
+
+```text
+A     216.239.32.21
+A     216.239.34.21
+A     216.239.36.21
+A     216.239.38.21
+AAAA  2001:4860:4802:32::15
+AAAA  2001:4860:4802:34::15
+AAAA  2001:4860:4802:36::15
+AAAA  2001:4860:4802:38::15
+```
+
+Keep all one.com `MX`, SPF, DKIM, and other email records so
+`info@debageri.se` continues to work. Records for other hosts, such as
+`resumematcher.debageri.se`, do not conflict with the apex mapping.
+
+### 3. Map `www`
+
+1. Add another Cloud Run mapping. Select the verified `debageri.se` domain and
+   enter only `www` in the subdomain field. The result must be
+   `www.debageri.se`.
+2. If the console rejects a valid subdomain, create it in Cloud Shell:
+
+   ```bash
+   gcloud config set project debageri-web
+   gcloud beta run domain-mappings create \
+     --service debageri-web \
+     --domain www.debageri.se \
+     --region europe-west1
+   ```
+
+3. In one.com, create the CNAME shown by Cloud Run:
+
+   ```text
+   Type: CNAME
+   Hostname: www
+   Is an alias of: ghs.googlehosted.com
+   TTL: default
+   ```
+
+If Cloud Run displays `ghs.googlehosted.com.`, remove the final dot if one.com
+rejects it. Do not include `https://`, a path, spaces, or quotation marks.
+
+### 4. Allow both public hostnames
+
+Add both hostnames to the reCAPTCHA v3 allowed-domain list and to Firebase
+Authentication → **Settings** → **Authorized domains**:
+
+```text
+debageri.se
+www.debageri.se
+```
+
+Use hostnames only: no protocol, path, or trailing slash. The existing App Check
+provider and matching reCAPTCHA site/secret key pair remain unchanged.
+
+Branch preview hostnames must also be allowed by reCAPTCHA before App Check can
+exchange a token. A rejected exchange returns 403 before the application request
+reaches the backend. The browser SDK may then throttle retries for up to a day;
+after correcting the domain, use a fresh private window or clear that preview
+site's storage to reset the local backoff.
+
+### 5. Verify DNS and HTTPS
+
+On Windows, check the public records with:
+
+```powershell
+Resolve-DnsName debageri.se -Type A
+Resolve-DnsName debageri.se -Type AAAA
+Resolve-DnsName www.debageri.se -Type CNAME
+```
+
+The apex records must resolve to the Google values shown by Cloud Run, not
+one.com's old web-hosting address. one.com remaining as the `NS` provider is
+expected because it still manages DNS.
+
+Cloud Run issues and renews a Google-managed TLS certificate automatically after
+DNS is correct. Provisioning commonly takes about 15 minutes but can take up to
+24 hours. Do not bypass a browser certificate warning or submit credentials until
+the mapping reports the certificate as active. Avoid deleting and recreating a
+pending mapping because doing so can restart provisioning.
+
+Finally test:
+
+```text
+https://debageri.se
+https://www.debageri.se
+https://debageri.se/admin/login
+https://debageri.se/careers
+```
 
 ---
 
