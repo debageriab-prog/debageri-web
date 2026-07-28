@@ -8,6 +8,9 @@ import { FadeIn } from "@/components/FadeIn";
 
 export const metadata: Metadata = {
   title: "Debageri AB | IT Consultancy in Gothenburg",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function HomePage() {

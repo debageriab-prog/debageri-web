@@ -10,6 +10,9 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Careers",
   description: "Explore open software consulting opportunities at Debageri AB.",
+  alternates: {
+    canonical: "/careers",
+  },
 };
 
 export default async function CareersPage() {

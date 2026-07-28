@@ -9,6 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://debageri.se"),
   title: {
     default: "Debageri AB | IT Consultancy in Gothenburg",
     template: "%s | Debageri AB",
