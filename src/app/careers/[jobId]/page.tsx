@@ -19,6 +19,9 @@ export async function generateMetadata({ params }: JobPageProps): Promise<Metada
   return {
     title: job.title,
     description: `Apply for ${job.title} at Debageri AB. ${job.cities.join(", ")}.`,
+    alternates: {
+      canonical: `/careers/${encodeURIComponent(job.id)}`,
+    },
   };
 }
 

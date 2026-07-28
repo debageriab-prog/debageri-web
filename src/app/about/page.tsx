@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "About",
   description:
     "Meet Debageri, a Gothenburg-based IT consultancy built around technical craft, trust, and freedom for experienced engineers.",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 const principles = [

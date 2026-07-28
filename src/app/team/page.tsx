@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "People",
   description:
     "Meet the senior software engineers behind Debageri AB in Gothenburg.",
+  alternates: {
+    canonical: "/team",
+  },
 };
 
 const people = [
