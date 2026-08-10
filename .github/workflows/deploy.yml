@@ -48,6 +48,7 @@ jobs:
             --build-arg NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID="${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}" \
             --build-arg NEXT_PUBLIC_FIREBASE_APP_ID="${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}" \
             --build-arg NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY="${{ secrets.NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY }}" \
+            --build-arg NEXT_PUBLIC_GOOGLE_ANALYTICS_ID="${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID }}" \
             -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/debageri/${{ env.SERVICE }}:${{ github.sha }} \
             -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/debageri/${{ env.SERVICE }}:latest \
             .
