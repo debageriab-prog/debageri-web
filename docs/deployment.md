@@ -146,6 +146,7 @@ Add all as **Repository secrets**:
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase web app config |
 | `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase web app config |
 | `NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY` | Firebase App Check reCAPTCHA v3 provider |
+| `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | GA4 web data stream measurement ID (for example `G-XXXXXXXXXX`) |
 | `FIREBASE_SERVICE_ACCOUNT_JSON` | Full contents of the Firebase Admin JSON (Step 3) |
 
 ---
@@ -366,6 +367,7 @@ You can also add this as a GitHub Actions step if you want rules to deploy autom
 | Variable | Where used | How set |
 |----------|-----------|---------|
 | `NEXT_PUBLIC_FIREBASE_*` | Browser bundle (baked in at build time) | GitHub secret → Docker build arg → ENV |
+| `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | Browser bundle, loaded only after visitor consent | GitHub secret → Docker build arg → ENV |
 | `FIREBASE_SERVICE_ACCOUNT_JSON` | Server (API routes, Server Components) | Secret Manager → Cloud Run runtime |
 | `NODE_ENV` | Next.js runtime | Set directly in Cloud Run deploy command |
 
