@@ -122,6 +122,31 @@ interface ContactMessage {
 
 ---
 
+### `appSettings/email`
+
+Stores the server-managed SMTP configuration and candidate status email templates.
+The SMTP password is encrypted with AES-256-GCM using the server-only
+`EMAIL_SETTINGS_ENCRYPTION_KEY`; neither the password nor the key is returned to
+the browser. All access uses authenticated server code via the Admin SDK.
+
+```ts
+interface EmailSettingsDocument {
+  host: string;
+  port: number;
+  secure: boolean;
+  username: string;
+  passwordEncrypted: string;
+  fromName: string;
+  fromEmail: string;
+  replyTo: string;
+  templates: Record<ApplicationStatus, { subject: string; body: string }>;
+  updatedAt: Timestamp;
+  updatedBy: string;
+}
+```
+
+---
+
 ## Indexes
 
 Planned composite indexes:
