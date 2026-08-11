@@ -8,24 +8,25 @@ Represents a job posting. Managed by admins.
 
 ```ts
 interface Job {
-  id: string;                    // Firestore document ID (slug-like)
-  title: string;                 // e.g. "Senior Java Developer"
-  description: string;           // Sanitised rich HTML job-ad copy
-  descriptionText: string;       // Plain-text search projection
-  cities: string[];              // One or more possible assignment cities
-  languages: string[];           // One or more working languages
+  id: string; // Firestore document ID (slug-like)
+  title: string; // e.g. "Senior Java Developer"
+  description: string; // Sanitised rich HTML job-ad copy
+  descriptionText: string; // Plain-text search projection
+  cities: string[]; // One or more possible assignment cities
+  languages: string[]; // One or more working languages
   status: "draft" | "published" | "archived";
   createdAt: Timestamp;
   updatedAt: Timestamp;
   publishedAt: Timestamp | null;
   archivedAt: Timestamp | null;
-  expiresAt: Timestamp | null;   // Hidden from Careers after this time
-  createdBy: string;             // Admin UID
-  updatedBy: string | null;      // Last editing admin UID
+  expiresAt: Timestamp | null; // Hidden from Careers after this time
+  createdBy: string; // Admin UID
+  updatedBy: string | null; // Last editing admin UID
 }
 ```
 
 **Security rules:**
+
 - Read: public for `status == "published"` only
 - Write: admin only
 
@@ -37,17 +38,17 @@ Represents a job application submitted by a candidate.
 
 ```ts
 interface Application {
-  id: string;                    // Firestore document ID
-  jobId: string;                 // Reference to jobs/{jobId}
-  jobTitle: string;              // Denormalised for display
+  id: string; // Firestore document ID
+  jobId: string; // Reference to jobs/{jobId}
+  jobTitle: string; // Denormalised for display
   firstName: string;
   lastName: string;
   email: string;
-  phoneCountry: string;          // Calling code, e.g. "+46"
+  phoneCountry: string; // Calling code, e.g. "+46"
   phoneNumber: string;
   linkedinUrl: string;
-  resumeStoragePath: string;     // Firebase Storage path
-  resumeFileName: string;        // Original file name
+  resumeStoragePath: string; // Firebase Storage path
+  resumeFileName: string; // Original file name
   resumeContentType: string;
   privacyConsent: true;
   dataProcessingConsent: true;
@@ -57,17 +58,15 @@ interface Application {
   updatedAt: Timestamp;
   statusUpdatedAt: Timestamp | null;
   statusUpdatedBy: string | null;
+  lastEmailSentAt: Timestamp | null;
+  lastEmailSubject: string | null;
 }
 
-type ApplicationStatus =
-  | "new"
-  | "interesting"
-  | "interview"
-  | "offer"
-  | "rejected";
+type ApplicationStatus = "new" | "interesting" | "interview" | "offer" | "rejected";
 ```
 
 **Security rules:**
+
 - Read: admin only — never exposed publicly
 - Direct browser access: denied
 - Public create: App Check-protected server Route Handler only
@@ -81,7 +80,7 @@ Tracks which Firebase Authentication UIDs have admin access.
 
 ```ts
 interface Admin {
-  uid: string;                   // Matches Firebase Auth UID (also the document ID)
+  uid: string; // Matches Firebase Auth UID (also the document ID)
   email: string;
   displayName: string;
   createdAt: Timestamp;
@@ -89,6 +88,7 @@ interface Admin {
 ```
 
 **Security rules:**
+
 - Read: admin only (checked server-side via Admin SDK)
 - Write: admin only
 
@@ -103,18 +103,19 @@ server code using the Firebase Admin SDK; browser Firestore clients have no acce
 interface ContactMessage {
   id: string;
   fullName: string;
-  email: string;                 // Trimmed and lowercased
+  email: string; // Trimmed and lowercased
   message: string;
   status: "unread" | "read" | "replied" | "ignored";
   createdAt: Timestamp;
   updatedAt: Timestamp;
   statusUpdatedAt: Timestamp | null;
   statusUpdatedBy: string | null; // Admin UID
-  expiresAt: Timestamp;           // createdAt + 12 months
+  expiresAt: Timestamp; // createdAt + 12 months
 }
 ```
 
 **Security and retention:**
+
 - Direct client reads and writes are denied.
 - Public submissions are validated and App Check verified by `/api/contact`.
 - Admin reads and status changes require a verified session cookie.
@@ -139,6 +140,7 @@ interface EmailSettingsDocument {
   fromName: string;
   fromEmail: string;
   replyTo: string;
+  adminNotificationEmail: string; // Receives new-application notifications
   templates: Record<ApplicationStatus, { subject: string; body: string }>;
   updatedAt: Timestamp;
   updatedBy: string;
@@ -151,12 +153,12 @@ interface EmailSettingsDocument {
 
 Planned composite indexes:
 
-| Collection | Fields | Order | Used by |
-|-----------|--------|-------|---------|
-| `jobs` | `status`, `publishedAt` | `publishedAt DESC` | Public job listing |
-| `applications` | `jobId`, `createdAt` | `createdAt DESC` | Admin applicant view per job |
-| `applications` | `status`, `createdAt` | `createdAt DESC` | Admin filtering by status |
-| `contactMessages` | `status`, `createdAt` | `createdAt DESC` | Admin message status filters |
+| Collection        | Fields                  | Order              | Used by                      |
+| ----------------- | ----------------------- | ------------------ | ---------------------------- |
+| `jobs`            | `status`, `publishedAt` | `publishedAt DESC` | Public job listing           |
+| `applications`    | `jobId`, `createdAt`    | `createdAt DESC`   | Admin applicant view per job |
+| `applications`    | `status`, `createdAt`   | `createdAt DESC`   | Admin filtering by status    |
+| `contactMessages` | `status`, `createdAt`   | `createdAt DESC`   | Admin message status filters |
 
 ---
 
@@ -169,6 +171,7 @@ resumes/
 ```
 
 Storage security rules must ensure:
+
 - Only the upload Route Handler (using Admin SDK) can write.
 - No public read access.
 - Admins can download via signed URLs generated server-side.

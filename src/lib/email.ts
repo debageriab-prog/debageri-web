@@ -1,21 +1,58 @@
 import "server-only";
 
 import nodemailer from "nodemailer";
-import { getSmtpCredentials } from "@/lib/email-settings";
+import { getEmailSettings, getSmtpCredentials } from "@/lib/email-settings";
+import { emailHtmlToText, sanitizeEmailHtml } from "@/lib/email-rich-text";
 
-function escapeHtml(value: string): string {
-  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
-}
-
-export async function sendCandidateEmail(to: string, subject: string, body: string) {
+export async function sendCandidateEmail(
+  to: string,
+  subject: string,
+  body: string,
+) {
   const settings = await getSmtpCredentials();
-  const transporter = nodemailer.createTransport({ host: settings.host, port: settings.port, secure: settings.secure, auth: { user: settings.username, pass: settings.password } });
+  const transporter = nodemailer.createTransport({
+    host: settings.host,
+    port: settings.port,
+    secure: settings.secure,
+    auth: { user: settings.username, pass: settings.password },
+  });
+  const html = sanitizeEmailHtml(body);
   await transporter.sendMail({
     from: { name: settings.fromName, address: settings.fromEmail },
     replyTo: settings.replyTo || undefined,
     to,
     subject,
-    text: body,
-    html: `<div style="font-family:Inter,Arial,sans-serif;line-height:1.7;color:#3D3027;white-space:pre-wrap">${escapeHtml(body)}</div>`,
+    text: emailHtmlToText(html),
+    html: `<div style="font-family:Inter,Arial,sans-serif;line-height:1.7;color:#3D3027">${html}</div>`,
+  });
+}
+
+export async function sendAdminApplicationNotification(input: {
+  candidateName: string;
+  candidateEmail: string;
+  jobTitle: string;
+  jobId: string;
+}) {
+  const configured = await getEmailSettings();
+  if (!configured.adminNotificationEmail) return;
+  const settings = await getSmtpCredentials();
+  const transporter = nodemailer.createTransport({
+    host: settings.host,
+    port: settings.port,
+    secure: settings.secure,
+    auth: { user: settings.username, pass: settings.password },
+  });
+  const subject = `New application: ${input.candidateName} — ${input.jobTitle}`;
+  const text = [
+    `${input.candidateName} applied for ${input.jobTitle} (${input.jobId}).`,
+    `Candidate email: ${input.candidateEmail}`,
+    "Open the admin candidate page to review the application.",
+  ].join("\n\n");
+  await transporter.sendMail({
+    from: { name: settings.fromName, address: settings.fromEmail },
+    replyTo: settings.replyTo || undefined,
+    to: settings.adminNotificationEmail,
+    subject,
+    text,
   });
 }

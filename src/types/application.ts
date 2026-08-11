@@ -29,6 +29,8 @@ export interface Application {
   updatedAt: Date;
   statusUpdatedAt: Date | null;
   statusUpdatedBy: string | null;
+  lastEmailSentAt: Date | null;
+  lastEmailSubject: string | null;
 }
 
 export type ApplicationField =
