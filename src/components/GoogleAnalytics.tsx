@@ -13,7 +13,7 @@ type Consent = "accepted" | "declined" | null;
 
 declare global {
   interface Window {
-    dataLayer?: unknown[][];
+    dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
   }
 }
@@ -71,7 +71,11 @@ function AnalyticsScripts({ measurementId }: { measurementId: string }) {
 
   useEffect(() => {
     window.dataLayer ??= [];
-    window.gtag ??= (...args: unknown[]) => window.dataLayer?.push(args);
+    window.gtag ??= function gtag() {
+      // Google requires the function's Arguments object for gtag commands.
+      // eslint-disable-next-line prefer-rest-params
+      window.dataLayer?.push(arguments);
+    };
 
     if (configuredId.current !== measurementId) {
       window.gtag("js", new Date());
