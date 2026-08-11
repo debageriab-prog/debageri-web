@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { FieldValue } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
 import { safeResumeName, validateApplication, validateResume } from "@/lib/application-validation";
@@ -39,16 +40,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "This opportunity is no longer accepting applications." }, { status: 409 });
   }
 
-  const applicationRef = getAdminDb().collection("applications").doc();
+  const applications = getAdminDb().collection("applications");
+  const existingApplication = await applications
+    .where("jobId", "==", jobId)
+    .where("email", "==", data.email)
+    .limit(1)
+    .get();
+  if (!existingApplication.empty) {
+    return NextResponse.json({ message: "Already applied" }, { status: 409 });
+  }
+
+  const applicationId = createHash("sha256").update(`${jobId}\0${data.email}`).digest("hex");
+  const applicationRef = applications.doc(applicationId);
   const fileName = safeResumeName(resume.name);
   const storagePath = `resumes/${applicationRef.id}/${fileName}`;
   const storageFile = getAdminStorage().bucket().file(storagePath);
   try {
-    await storageFile.save(Buffer.from(await resume.arrayBuffer()), {
-      resumable: false,
-      contentType: resume.type,
-      metadata: { cacheControl: "private, no-store", metadata: { applicationId: applicationRef.id } },
-    });
     await applicationRef.create({
       jobId, jobTitle: String(job?.title ?? jobId), firstName: data.firstName, lastName: data.lastName,
       email: data.email, phoneCountry: data.phoneCountry, phoneNumber: data.phoneNumber,
@@ -58,9 +65,28 @@ export async function POST(request: Request) {
       updatedAt: FieldValue.serverTimestamp(), statusUpdatedAt: null, statusUpdatedBy: null,
     });
   } catch (error) {
-    await storageFile.delete({ ignoreNotFound: true }).catch(() => undefined);
+    if (isAlreadyExistsError(error)) {
+      return NextResponse.json({ message: "Already applied" }, { status: 409 });
+    }
     console.error("Failed to store job application", error);
     return NextResponse.json({ message: "We could not submit your application. Please try again." }, { status: 500 });
   }
+
+  try {
+    await storageFile.save(Buffer.from(await resume.arrayBuffer()), {
+      resumable: false,
+      contentType: resume.type,
+      metadata: { cacheControl: "private, no-store", metadata: { applicationId: applicationRef.id } },
+    });
+  } catch (error) {
+    await applicationRef.delete().catch(() => undefined);
+    await storageFile.delete({ ignoreNotFound: true }).catch(() => undefined);
+    console.error("Failed to store job application resume", error);
+    return NextResponse.json({ message: "We could not submit your application. Please try again." }, { status: 500 });
+  }
   return NextResponse.json({ ok: true }, { status: 201 });
+}
+
+function isAlreadyExistsError(error: unknown) {
+  return Boolean(error && typeof error === "object" && "code" in error && (error.code === 6 || error.code === "already-exists"));
 }
