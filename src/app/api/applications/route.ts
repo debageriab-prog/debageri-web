@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     .limit(1)
     .get();
   if (!existingApplication.empty) {
-    return NextResponse.json({ message: "Already applied" }, { status: 409 });
+    return NextResponse.json({ message: "You have already applied for this role." }, { status: 409 });
   }
 
   const applicationId = createHash("sha256").update(`${jobId}\0${data.email}`).digest("hex");
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     if (isAlreadyExistsError(error)) {
-      return NextResponse.json({ message: "Already applied" }, { status: 409 });
+      return NextResponse.json({ message: "You have already applied for this role." }, { status: 409 });
     }
     console.error("Failed to store job application", error);
     return NextResponse.json({ message: "We could not submit your application. Please try again." }, { status: 500 });
