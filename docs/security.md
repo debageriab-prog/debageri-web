@@ -11,12 +11,12 @@
 
 ## Secrets management
 
-| Variable type | Location | Committed? |
-|---------------|----------|-----------|
-| Public Firebase config (`NEXT_PUBLIC_FIREBASE_*`) | `.env.local` → Vercel env | No (`.env.local` is gitignored) |
-| Firebase Admin service account | `FIREBASE_SERVICE_ACCOUNT_JSON` env var | Never |
-| Any future API keys | `.env.local` → Vercel env | Never |
-| Email settings encryption key | Secret Manager → Cloud Run runtime | Never |
+| Variable type                                     | Location                                | Committed?                      |
+| ------------------------------------------------- | --------------------------------------- | ------------------------------- |
+| Public Firebase config (`NEXT_PUBLIC_FIREBASE_*`) | `.env.local` → Vercel env               | No (`.env.local` is gitignored) |
+| Firebase Admin service account                    | `FIREBASE_SERVICE_ACCOUNT_JSON` env var | Never                           |
+| Any future API keys                               | `.env.local` → Vercel env               | Never                           |
+| Email settings encryption key                     | Secret Manager → Cloud Run runtime      | Never                           |
 
 Template with placeholder values only: `.env.example` (committed).
 
@@ -24,6 +24,9 @@ SMTP passwords entered in the admin panel are encrypted with AES-256-GCM before
 being stored in Firestore. The encryption key remains a server-only environment
 secret and must be backed up securely because rotating it requires re-entering
 the SMTP password.
+
+Candidate email HTML is sanitised on the server before it is stored or sent.
+Only basic formatting, restricted text colours, lists, and safe links are kept.
 
 **Rule:** If a value looks like a real credential, it must not be committed.
 
@@ -90,12 +93,12 @@ match /resumes/{applicationId}/{fileName} {
 
 Enforced server-side in the upload Route Handler:
 
-| Check | Constraint |
-|-------|-----------|
-| MIME type | `application/pdf`, `application/msword`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document` |
-| File size | Max 5 MB |
-| File name | Sanitised before storage (no path traversal) |
-| Virus scanning | Deferred to Phase 5 (Cloud Storage scanning extension) |
+| Check          | Constraint                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| MIME type      | `application/pdf`, `application/msword`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document` |
+| File size      | Max 5 MB                                                                                                           |
+| File name      | Sanitised before storage (no path traversal)                                                                       |
+| Virus scanning | Deferred to Phase 5 (Cloud Storage scanning extension)                                                             |
 
 Resume objects are private and downloaded by admins only through signed URLs
 that expire after five minutes. If the application record cannot be created,

@@ -8,6 +8,7 @@ export interface EmailSettings {
   fromName: string;
   fromEmail: string;
   replyTo: string;
+  adminNotificationEmail: string;
   hasPassword: boolean;
 }
 
@@ -27,4 +28,3 @@ export interface EmailMergeData {
   companyName: string;
   status: string;
 }
-
