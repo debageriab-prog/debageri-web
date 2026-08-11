@@ -113,6 +113,9 @@ export FIREBASE_SERVICE_ACCOUNT_JSON=$(cat << 'EOF'
 EOF
 )
 
+# Generate this once, store it safely, and keep the same value across deployments.
+export EMAIL_SETTINGS_ENCRYPTION_KEY=$(node -e "console.log(require('crypto').randomBytes(32).toString('base64'))")
+
 # Firebase web app config (public values)
 export NEXT_PUBLIC_FIREBASE_API_KEY='your-api-key'
 export NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN='your-project.firebaseapp.com'
@@ -148,6 +151,10 @@ Add all as **Repository secrets**:
 | `NEXT_PUBLIC_FIREBASE_APP_CHECK_RECAPTCHA_SITE_KEY` | Firebase App Check reCAPTCHA v3 provider |
 | `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | GA4 web data stream measurement ID (for example `G-XXXXXXXXXX`) |
 | `FIREBASE_SERVICE_ACCOUNT_JSON` | Full contents of the Firebase Admin JSON (Step 3) |
+
+`EMAIL_SETTINGS_ENCRYPTION_KEY` is stored directly in Google Secret Manager by
+the setup script. It does not need to be added as a GitHub secret because it is
+only read by Cloud Run at runtime.
 
 ---
 
@@ -369,6 +376,7 @@ You can also add this as a GitHub Actions step if you want rules to deploy autom
 | `NEXT_PUBLIC_FIREBASE_*` | Browser bundle (baked in at build time) | GitHub secret → Docker build arg → ENV |
 | `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | Browser bundle, loaded only after visitor consent | GitHub secret → Docker build arg → ENV |
 | `FIREBASE_SERVICE_ACCOUNT_JSON` | Server (API routes, Server Components) | Secret Manager → Cloud Run runtime |
+| `EMAIL_SETTINGS_ENCRYPTION_KEY` | Server-side SMTP password encryption | Secret Manager → Cloud Run runtime |
 | `NODE_ENV` | Next.js runtime | Set directly in Cloud Run deploy command |
 
 **Never** put server secrets in `NEXT_PUBLIC_*` variables — they are visible in the browser.
