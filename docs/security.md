@@ -16,8 +16,14 @@
 | Public Firebase config (`NEXT_PUBLIC_FIREBASE_*`) | `.env.local` → Vercel env | No (`.env.local` is gitignored) |
 | Firebase Admin service account | `FIREBASE_SERVICE_ACCOUNT_JSON` env var | Never |
 | Any future API keys | `.env.local` → Vercel env | Never |
+| Email settings encryption key | Secret Manager → Cloud Run runtime | Never |
 
 Template with placeholder values only: `.env.example` (committed).
+
+SMTP passwords entered in the admin panel are encrypted with AES-256-GCM before
+being stored in Firestore. The encryption key remains a server-only environment
+secret and must be backed up securely because rotating it requires re-entering
+the SMTP password.
 
 **Rule:** If a value looks like a real credential, it must not be committed.
 
