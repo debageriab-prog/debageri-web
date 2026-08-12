@@ -11,7 +11,12 @@ import {
   getAdminDb,
   getAdminStorage,
 } from "@/lib/firebase/admin";
-import { sendAdminApplicationNotification } from "@/lib/email";
+import {
+  sendAdminApplicationNotification,
+  sendCandidateEmail,
+} from "@/lib/email";
+import { getEmailTemplates } from "@/lib/email-settings";
+import { renderEmailTemplate } from "@/lib/email-templates";
 
 const MAX_REQUEST_BYTES = 6 * 1024 * 1024;
 
@@ -160,6 +165,32 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Failed to send new application notification", error);
+  }
+  try {
+    const template = (await getEmailTemplates()).find(
+      (item) => item.status === "new",
+    );
+    if (!template) throw new Error("The new application email template is missing.");
+
+    const mergeData = {
+      candidateFirstName: data.firstName,
+      candidateLastName: data.lastName,
+      candidateFullName: `${data.firstName} ${data.lastName}`.trim(),
+      candidateEmail: data.email,
+      jobTitle: String(job?.title ?? jobId),
+      companyName: "Debageri AB",
+      status: "new",
+    };
+    const subject = renderEmailTemplate(template.subject, mergeData);
+    const body = renderEmailTemplate(template.body, mergeData);
+
+    await sendCandidateEmail(data.email, subject, body);
+    await applicationRef.update({
+      lastEmailSentAt: FieldValue.serverTimestamp(),
+      lastEmailSubject: subject,
+    });
+  } catch (error) {
+    console.error("Failed to send application confirmation email", error);
   }
   return NextResponse.json({ ok: true }, { status: 201 });
 }
