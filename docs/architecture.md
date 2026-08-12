@@ -83,9 +83,11 @@ debageri-web/
 3. The server confirms the job is published and unexpired, validates all fields
    and the 5 MB PDF/DOC/DOCX limit, then privately stores the resume and creates
    the linked `applications` document. A failed database write removes the upload.
-4. Admins use `/admin/candidates` to see the applicant and position, update the
+4. After a successful submission, the server sends the candidate the configured
+   `new` status email and sends the configured admin a new-application notification.
+   Email delivery failures are logged without invalidating the saved application.
+5. Admins use `/admin/candidates` to see the applicant and position, update the
    hiring status, and obtain a five-minute signed resume download URL.
-5. Email notifications and internal notes remain planned.
 
 ## Contact message flow
 
