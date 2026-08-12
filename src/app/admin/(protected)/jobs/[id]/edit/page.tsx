@@ -32,6 +32,8 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
             description: job.description,
             cities: job.cities,
             languages: job.languages,
+            swedenOnly: job.swedenOnly,
+            remotePosition: job.remotePosition,
             expiresAt: toSwedenDateTimeLocal(job.expiresAt),
           }}
         />

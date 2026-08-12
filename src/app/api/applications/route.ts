@@ -49,19 +49,10 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  const { data, errors } = validateApplication(formData);
-  const resume = formData.get("resume");
-  const resumeError = validateResume(resume);
-  if (resumeError) errors.resume = resumeError;
   const jobId = formData.get("jobId");
-  if (
-    typeof jobId !== "string" ||
-    !jobId ||
-    Object.keys(errors).length > 0 ||
-    !(resume instanceof File)
-  ) {
+  if (typeof jobId !== "string" || !jobId) {
     return NextResponse.json(
-      { message: "Check the highlighted fields.", fieldErrors: errors },
+      { message: "Invalid application." },
       { status: 400 },
     );
   }
@@ -77,6 +68,20 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { message: "This opportunity is no longer accepting applications." },
       { status: 409 },
+    );
+  }
+
+  const { data, errors } = validateApplication(formData, {
+    swedenOnly: job.swedenOnly === true,
+    remotePosition: job.remotePosition === true,
+  });
+  const resume = formData.get("resume");
+  const resumeError = validateResume(resume);
+  if (resumeError) errors.resume = resumeError;
+  if (Object.keys(errors).length > 0 || !(resume instanceof File)) {
+    return NextResponse.json(
+      { message: "Check the highlighted fields.", fieldErrors: errors },
+      { status: 400 },
     );
   }
 
@@ -115,6 +120,8 @@ export async function POST(request: Request) {
       resumeContentType: resume.type,
       privacyConsent: true,
       dataProcessingConsent: true,
+      swedenLocationConfirmed: data.swedenLocationConfirmed,
+      onsiteRequirementAcknowledged: data.onsiteRequirementAcknowledged,
       consentedAt: FieldValue.serverTimestamp(),
       status: "new",
       createdAt: FieldValue.serverTimestamp(),

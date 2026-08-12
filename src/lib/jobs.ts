@@ -36,6 +36,8 @@ function jobFromSnapshot(snapshot: DocumentSnapshot): Job | null {
     descriptionText: typeof data.descriptionText === "string" ? data.descriptionText : jobDescriptionToText(description),
     cities: stringList(data.cities),
     languages: stringList(data.languages),
+    swedenOnly: data.swedenOnly === true,
+    remotePosition: data.remotePosition === true,
     status: status as JobStatus,
     createdAt: dateValue(data.createdAt),
     updatedAt: dateValue(data.updatedAt),

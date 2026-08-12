@@ -107,6 +107,7 @@ the server removes its uploaded resume.
 ## Applicant consent
 
 - Privacy-policy acceptance and explicit recruitment-processing consent are required.
+- Job-specific Sweden-location and on-site-work confirmations are enforced server-side.
 - The server records both consent flags and a server-generated consent timestamp.
 - Each record contains the exact job ID and denormalised position title.
 - Applicants can request access, correction, or deletion at `info@debageri.se`.

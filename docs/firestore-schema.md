@@ -14,6 +14,8 @@ interface Job {
   descriptionText: string; // Plain-text search projection
   cities: string[]; // One or more possible assignment cities
   languages: string[]; // One or more working languages
+  swedenOnly: boolean; // Candidate must confirm Swedish residence and work rights
+  remotePosition: boolean; // False requires an on-site-work acknowledgement
   status: "draft" | "published" | "archived";
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -52,6 +54,8 @@ interface Application {
   resumeContentType: string;
   privacyConsent: true;
   dataProcessingConsent: true;
+  swedenLocationConfirmed: boolean; // Required when the job is Sweden-only
+  onsiteRequirementAcknowledged: boolean; // Required when the job is not remote
   consentedAt: Timestamp;
   status: ApplicationStatus;
   createdAt: Timestamp;

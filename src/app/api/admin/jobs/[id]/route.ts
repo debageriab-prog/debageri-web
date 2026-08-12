@@ -43,6 +43,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       descriptionText,
       cities: data.cities,
       languages: data.languages,
+      swedenOnly: data.swedenOnly,
+      remotePosition: data.remotePosition,
       expiresAt: data.expiresAt ? Timestamp.fromDate(new Date(data.expiresAt)) : null,
       updatedAt: FieldValue.serverTimestamp(),
       updatedBy: admin.uid,

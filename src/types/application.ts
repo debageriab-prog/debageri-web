@@ -23,6 +23,8 @@ export interface Application {
   resumeContentType: string;
   privacyConsent: true;
   dataProcessingConsent: true;
+  swedenLocationConfirmed: boolean;
+  onsiteRequirementAcknowledged: boolean;
   consentedAt: Date;
   status: ApplicationStatus;
   createdAt: Date;
@@ -42,6 +44,8 @@ export type ApplicationField =
   | "linkedinUrl"
   | "resume"
   | "privacyConsent"
-  | "dataProcessingConsent";
+  | "dataProcessingConsent"
+  | "swedenLocationConfirmed"
+  | "onsiteRequirementAcknowledged";
 
 export type ApplicationFieldErrors = Partial<Record<ApplicationField, string>>;
