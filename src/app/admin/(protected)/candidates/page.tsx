@@ -11,6 +11,14 @@ import {
 
 export const metadata: Metadata = { title: "Candidates" };
 
+const STATUS_DOT_COLORS: Record<ApplicationStatus, string> = {
+  new: "bg-[#9a7a63]",
+  interesting: "bg-[#c28b36]",
+  interview: "bg-[#5f83a8]",
+  offer: "bg-[#5f8a62]",
+  rejected: "bg-[#b85c4a]",
+};
+
 export default async function CandidatesPage({
   searchParams,
 }: {
@@ -96,7 +104,11 @@ export default async function CandidatesPage({
                     <h2 className="text-xl font-semibold">
                       {application.firstName} {application.lastName}
                     </h2>
-                    <span className="rounded-full bg-[#e8d8c8] px-2.5 py-1 text-xs font-semibold capitalize text-[#5a4535]">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#e8d8c8] px-2.5 py-1 text-xs font-semibold capitalize text-[#5a4535]">
+                      <span
+                        aria-hidden="true"
+                        className={`h-2 w-2 rounded-full ${STATUS_DOT_COLORS[application.status]}`}
+                      />
                       {application.status}
                     </span>
                   </div>
@@ -140,7 +152,7 @@ export default async function CandidatesPage({
                     rel="noopener noreferrer"
                     className="rounded-lg border border-[#c4a98e] px-4 py-2.5 text-center text-sm font-semibold text-[#5a4535]"
                   >
-                    Open {application.resumeFileName} ↗
+                    Open Resume ↗
                   </a>
                   <CandidateStatusEditor
                     key={`${application.id}-${application.statusUpdatedAt?.getTime() ?? 0}`}
