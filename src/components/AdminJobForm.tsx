@@ -11,6 +11,8 @@ interface InitialJob {
   description: string;
   cities: string[];
   languages: string[];
+  swedenOnly: boolean;
+  remotePosition: boolean;
   expiresAt: string;
 }
 
@@ -21,6 +23,8 @@ export function AdminJobForm({ initialJob }: { initialJob?: InitialJob }) {
   const [description, setDescription] = useState(initialJob?.description ?? "");
   const [cities, setCities] = useState<string[]>(initialJob?.cities ?? []);
   const [languages, setLanguages] = useState<string[]>(initialJob?.languages ?? []);
+  const [swedenOnly, setSwedenOnly] = useState(initialJob?.swedenOnly ?? false);
+  const [remotePosition, setRemotePosition] = useState(initialJob?.remotePosition ?? false);
   const [expiresAt, setExpiresAt] = useState(initialJob?.expiresAt ?? "");
   const [fieldErrors, setFieldErrors] = useState<JobFieldErrors>({});
   const [formError, setFormError] = useState("");
@@ -42,6 +46,8 @@ export function AdminJobForm({ initialJob }: { initialJob?: InitialJob }) {
           description,
           cities,
           languages,
+          swedenOnly,
+          remotePosition,
           expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
         }),
       });
@@ -118,6 +124,25 @@ export function AdminJobForm({ initialJob }: { initialJob?: InitialJob }) {
         />
       </div>
 
+      <fieldset>
+        <legend className="text-sm font-semibold text-[#3D3027]">Position requirements</legend>
+        <p className="mt-1 text-xs text-[#9a7a63]">These settings control which confirmations candidates see when applying.</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <JobOption
+            checked={swedenOnly}
+            onChange={setSwedenOnly}
+            label="Only for candidates in Sweden"
+            description="Candidates must confirm they are based in Sweden and have the right to work here."
+          />
+          <JobOption
+            checked={remotePosition}
+            onChange={setRemotePosition}
+            label="Remote position"
+            description="When unchecked, candidates must acknowledge that the role requires on-site presence."
+          />
+        </div>
+      </fieldset>
+
       <Field label="Expiry date" htmlFor="job-expiry" error={fieldErrors.expiresAt} help="Optional, in Sweden time. The job disappears from Careers automatically.">
         <input
           id="job-expiry"
@@ -145,6 +170,23 @@ export function AdminJobForm({ initialJob }: { initialJob?: InitialJob }) {
         </button>
       </div>
     </form>
+  );
+}
+
+function JobOption({ checked, onChange, label, description }: { checked: boolean; onChange: (checked: boolean) => void; label: string; description: string }) {
+  return (
+    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#e8d8c8] bg-[#F7F2EA] p-4">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+        className="mt-0.5 h-5 w-5 flex-none accent-[#3D3027]"
+      />
+      <span>
+        <span className="block text-sm font-semibold text-[#3D3027]">{label}</span>
+        <span className="mt-1 block text-xs leading-relaxed text-[#7a5e4a]">{description}</span>
+      </span>
+    </label>
   );
 }
 

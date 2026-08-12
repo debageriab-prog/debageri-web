@@ -19,7 +19,7 @@ const COUNTRIES = [
 
 const ACCEPTED_RESUMES = ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
-export function JobApplicationModal({ jobId, jobTitle, instanceId = "primary" }: { jobId: string; jobTitle: string; instanceId?: string }) {
+export function JobApplicationModal({ jobId, jobTitle, swedenOnly, remotePosition, instanceId = "primary" }: { jobId: string; jobTitle: string; swedenOnly: boolean; remotePosition: boolean; instanceId?: string }) {
   const fieldId = `${jobId}-${instanceId}`;
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -42,6 +42,8 @@ export function JobApplicationModal({ jobId, jobTitle, instanceId = "primary" }:
     body.set("jobId", jobId);
     body.set("privacyConsent", String(body.has("privacyConsent")));
     body.set("dataProcessingConsent", String(body.has("dataProcessingConsent")));
+    body.set("swedenLocationConfirmed", String(body.has("swedenLocationConfirmed")));
+    body.set("onsiteRequirementAcknowledged", String(body.has("onsiteRequirementAcknowledged")));
     try {
       const token = await getAppCheckToken();
       const response = await fetch("/api/applications", { method: "POST", headers: token ? { "X-Firebase-AppCheck": token } : {}, body });
@@ -70,7 +72,16 @@ export function JobApplicationModal({ jobId, jobTitle, instanceId = "primary" }:
         <div className="my-8 h-px bg-[#e8d8c8]"/>
         <FormSection number="02" title="Share your experience" description="Drop your resume here and we will take it from there."><ResumeDropzone jobId={fieldId} error={errors.resume}/></FormSection>
         <div className="my-8 h-px bg-[#e8d8c8]"/>
-        <FormSection number="03" title="Your privacy" description="Clear consent, with no small-print surprises.">
+        {(swedenOnly || !remotePosition) && <>
+          <FormSection number="03" title="Role requirements" description="Please confirm the practical requirements for this position.">
+            <div className="space-y-3">
+              {swedenOnly && <Consent name="swedenLocationConfirmed" error={errors.swedenLocationConfirmed}>I confirm that I am currently based in Sweden and have the right to live and work here.</Consent>}
+              {!remotePosition && <Consent name="onsiteRequirementAcknowledged" error={errors.onsiteRequirementAcknowledged}>I understand that this role requires regular presence at the client&apos;s office and is not a remote position.</Consent>}
+            </div>
+          </FormSection>
+          <div className="my-8 h-px bg-[#e8d8c8]"/>
+        </>}
+        <FormSection number={swedenOnly || !remotePosition ? "04" : "03"} title="Your privacy" description="Clear consent, with no small-print surprises.">
           <div className="space-y-3"><Consent name="privacyConsent" error={errors.privacyConsent}>I have read and agree to the <Link href="/privacy" target="_blank" className="font-semibold underline decoration-[#c4a98e] underline-offset-2">privacy policy</Link>.</Consent><Consent name="dataProcessingConsent" error={errors.dataProcessingConsent}>I agree that Debageri AB may store and process my personal data for this job application.</Consent></div>
         </FormSection>
         {formError && <p role="alert" className="mt-6 rounded-xl border border-[#d8b9a3] bg-[#f7ebe2] px-4 py-3 text-sm text-[#6f3e2d]">{formError}</p>}

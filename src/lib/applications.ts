@@ -37,6 +37,8 @@ function mapApplication(
     ),
     privacyConsent: true,
     dataProcessingConsent: true,
+    swedenLocationConfirmed: data.swedenLocationConfirmed === true,
+    onsiteRequirementAcknowledged: data.onsiteRequirementAcknowledged === true,
     consentedAt: toDate(data.consentedAt),
     status: data.status as ApplicationStatus,
     createdAt: toDate(data.createdAt),

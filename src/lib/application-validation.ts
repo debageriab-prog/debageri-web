@@ -16,6 +16,13 @@ export interface ApplicationSubmission {
   linkedinUrl: string;
   privacyConsent: boolean;
   dataProcessingConsent: boolean;
+  swedenLocationConfirmed: boolean;
+  onsiteRequirementAcknowledged: boolean;
+}
+
+interface JobApplicationRequirements {
+  swedenOnly: boolean;
+  remotePosition: boolean;
 }
 
 function value(formData: FormData, key: string) {
@@ -23,7 +30,7 @@ function value(formData: FormData, key: string) {
   return typeof entry === "string" ? entry.trim() : "";
 }
 
-export function validateApplication(formData: FormData) {
+export function validateApplication(formData: FormData, requirements: JobApplicationRequirements) {
   const data: ApplicationSubmission = {
     firstName: value(formData, "firstName"),
     lastName: value(formData, "lastName"),
@@ -33,6 +40,8 @@ export function validateApplication(formData: FormData) {
     linkedinUrl: value(formData, "linkedinUrl"),
     privacyConsent: formData.get("privacyConsent") === "true",
     dataProcessingConsent: formData.get("dataProcessingConsent") === "true",
+    swedenLocationConfirmed: formData.get("swedenLocationConfirmed") === "true",
+    onsiteRequirementAcknowledged: formData.get("onsiteRequirementAcknowledged") === "true",
   };
   const errors: ApplicationFieldErrors = {};
 
@@ -49,6 +58,12 @@ export function validateApplication(formData: FormData) {
   }
   if (!data.privacyConsent) errors.privacyConsent = "You must agree to the privacy policy.";
   if (!data.dataProcessingConsent) errors.dataProcessingConsent = "Consent is required to process your application.";
+  if (requirements.swedenOnly && !data.swedenLocationConfirmed) {
+    errors.swedenLocationConfirmed = "Confirm that you are based in Sweden and have the right to work here.";
+  }
+  if (!requirements.remotePosition && !data.onsiteRequirementAcknowledged) {
+    errors.onsiteRequirementAcknowledged = "Acknowledge that this role requires on-site presence.";
+  }
 
   return { data, errors };
 }

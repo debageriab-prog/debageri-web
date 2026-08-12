@@ -50,6 +50,8 @@ export async function POST(request: Request) {
       descriptionText,
       cities: data.cities,
       languages: data.languages,
+      swedenOnly: data.swedenOnly,
+      remotePosition: data.remotePosition,
       status: "published",
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),

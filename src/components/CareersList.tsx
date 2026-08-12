@@ -11,6 +11,8 @@ interface SerializedJob {
   descriptionText: string;
   cities: string[];
   languages: string[];
+  swedenOnly: boolean;
+  remotePosition: boolean;
   status: JobStatus;
   createdAt: string;
   updatedAt: string;

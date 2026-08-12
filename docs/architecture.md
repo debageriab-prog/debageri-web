@@ -78,7 +78,8 @@ debageri-web/
 ## Data flow for job applications
 
 1. Applicant submits contact details, LinkedIn URL, resume, privacy acceptance,
-   and explicit recruitment-processing consent from a Careers modal.
+   explicit recruitment-processing consent, and any location or on-site
+   confirmations required by the selected job from a Careers modal.
 2. The browser sends one App Check-protected multipart request to `/api/applications`.
 3. The server confirms the job is published and unexpired, validates all fields
    and the 5 MB PDF/DOC/DOCX limit, then privately stores the resume and creates
@@ -100,7 +101,8 @@ debageri-web/
 ## Job publishing flow
 
 1. An authenticated admin opens `/admin/jobs/new` and enters a unique job ID,
-   title, rich-text description, cities, languages, and an optional expiry time.
+   title, rich-text description, cities, languages, location and remote-work
+   requirements, and an optional expiry time.
 2. The server verifies the admin session, validates the payload, and creates a
    published Firestore `jobs/{jobId}` document using the Admin SDK.
 3. The public Careers page reads published jobs on the server and sorts them by

@@ -47,7 +47,7 @@ export default async function JobPage({ params }: JobPageProps) {
               <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-[#3D3027] md:text-6xl">{job.title}</h1>
               <p className="mt-5 text-base text-[#7a5e4a]">{job.expiresAt ? `Applications close ${formatDate(job.expiresAt)}.` : "Applications are open until the position is filled."}</p>
             </div>
-            <JobApplicationModal jobId={job.id} jobTitle={job.title} />
+            <JobApplicationModal jobId={job.id} jobTitle={job.title} swedenOnly={job.swedenOnly} remotePosition={job.remotePosition} />
           </div>
         </div>
       </section>
@@ -74,7 +74,7 @@ export default async function JobPage({ params }: JobPageProps) {
       <section className="border-t border-[#e8d8c8] bg-[#F7F2EA] px-6 py-14">
         <div className="mx-auto flex max-w-5xl flex-col gap-5 rounded-2xl border border-[#e8d8c8] bg-[#fdfaf6] px-7 py-8 text-[#3D3027] sm:flex-row sm:items-center sm:justify-between sm:px-9">
           <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9a7a63]">Interested?</p><h2 className="mt-2 text-2xl font-semibold">Let us get to know you.</h2></div>
-          <JobApplicationModal jobId={job.id} jobTitle={job.title} instanceId="footer" />
+          <JobApplicationModal jobId={job.id} jobTitle={job.title} swedenOnly={job.swedenOnly} remotePosition={job.remotePosition} instanceId="footer" />
         </div>
       </section>
     </main>

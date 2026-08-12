@@ -9,6 +9,8 @@ export interface Job {
   descriptionText: string;
   cities: string[];
   languages: string[];
+  swedenOnly: boolean;
+  remotePosition: boolean;
   status: JobStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -25,6 +27,8 @@ export interface JobSubmission {
   description: string;
   cities: string[];
   languages: string[];
+  swedenOnly: boolean;
+  remotePosition: boolean;
   expiresAt: string | null;
 }
 

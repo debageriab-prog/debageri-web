@@ -22,6 +22,8 @@ export function validateJobSubmission(value: unknown): {
     description: stringValue(input.description),
     cities: stringList(input.cities),
     languages: stringList(input.languages),
+    swedenOnly: input.swedenOnly === true,
+    remotePosition: input.remotePosition === true,
     expiresAt: stringValue(input.expiresAt) || null,
   };
   const errors: JobFieldErrors = {};
