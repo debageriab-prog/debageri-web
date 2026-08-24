@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { LogoMark } from "@/components/Logo";
 import { FadeIn } from "@/components/FadeIn";
+import { HeroSpheres } from "@/components/HeroSpheres";
 
 export const metadata: Metadata = {
   title: "Debageri AB | IT Consultancy in Gothenburg",
@@ -18,8 +20,7 @@ export default function HomePage() {
     <>
       <Header />
       <main>
-        <HeroSection />
-        <TrustBar />
+        <HeroBlock />
         <WhySection />
         <NameStorySection />
         <TeamSection />
@@ -32,38 +33,48 @@ export default function HomePage() {
 
 /* ─── Hero ─────────────────────────────────────────────────────────────────── */
 
+/* Hero and trust bar share one canvas so a single sphere layer spans both; the
+   bar only draws its rules and lets the hero background through underneath. */
+function HeroBlock() {
+  return (
+    <div className="relative overflow-hidden bg-[#0B0B12]">
+      <HeroSpheres />
+      <HeroSection />
+      <TrustBar />
+    </div>
+  );
+}
+
 function HeroSection() {
   return (
-    <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-[#F7F2EA]">
-      {/* Full-bleed circuit background */}
-      <CircuitBg className="absolute inset-0 w-full h-full pointer-events-none select-none" aria-hidden="true" />
-
-      <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-16 md:pt-28 md:pb-24">
-        <div className="grid md:grid-cols-[1fr_auto] gap-12 md:gap-6 items-center">
-
-          {/* Headline and calls to action */}
+    <section aria-labelledby="hero-heading" data-hero className="relative">
+      <div className="mx-auto max-w-6xl px-6 pt-[168px] pb-20 md:pt-[212px] md:pb-28">
+        <div className="grid items-center gap-12 md:grid-cols-[1fr_auto] md:gap-8">
           <div className="max-w-2xl">
             <FadeIn>
-              <p className="mb-5 text-xs font-semibold tracking-[0.2em] text-[#9a7a63] uppercase">
+              <p className="mb-5 inline-flex items-center gap-2.5 font-display text-xs font-bold tracking-[0.22em] text-[#D08A4F] uppercase">
+                <span className="hero-beacon" aria-hidden="true">
+                  <PinIcon size={13} />
+                </span>
                 Gothenburg, Sweden
               </p>
             </FadeIn>
 
             <FadeIn delay={80}>
-              <h1 id="hero-heading" className="text-5xl font-semibold leading-[1.08] tracking-tight text-[#3D3027] md:text-6xl lg:text-7xl">
+              <h1 id="hero-heading" className="font-display text-5xl font-bold leading-[1.08] tracking-tight text-[#F7F2EA] md:text-6xl lg:text-7xl">
                 We build{" "}
-                <em className="not-italic text-[#9a7a63]">software.</em>
+                <em className="not-italic text-[#E8833A]">software.</em>
                 <br />
                 We build{" "}
-                <em className="not-italic text-[#9a7a63]">careers.</em>
+                <em className="not-italic text-[#E8833A]">careers.</em>
                 <br />
                 We build{" "}
-                <em className="not-italic text-[#9a7a63]">trust.</em>
+                <em className="not-italic text-[#E8833A]">trust.</em>
               </h1>
             </FadeIn>
 
             <FadeIn delay={160}>
-              <p className="mt-7 max-w-lg text-lg leading-relaxed text-[#7a5e4a]">
+              <p className="mt-7 max-w-lg text-lg leading-relaxed text-[#C7BFB4]">
                 Debageri is a Swedish IT consultancy for senior engineers.
                 We believe in freedom, trust and flexibility. You decide
                 how to make the most of what you earn.
@@ -74,7 +85,7 @@ function HeroSection() {
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
                   href="/careers"
-                  className="inline-flex items-center gap-2 rounded-lg bg-[#3D3027] px-7 py-3 text-sm font-semibold text-[#F7F2EA] hover:bg-[#5a4535] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-[#F2924A] to-[#D9702A] px-8 py-3.5 text-sm font-semibold text-[#2A1B0E] shadow-lg shadow-[#E8833A]/20 hover:from-[#F6A263] hover:to-[#E27C33] transition-colors"
                 >
                   View Open Positions
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -83,7 +94,7 @@ function HeroSection() {
                 </Link>
                 <Link
                   href="/about"
-                  className="inline-flex items-center gap-2 rounded-lg border border-[#c4a98e] px-7 py-3 text-sm font-semibold text-[#3D3027] hover:bg-[#e8d8c8] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#5C4A3C] px-8 py-3.5 text-sm font-semibold text-[#F7F2EA] hover:bg-[#1A1A24] transition-colors"
                 >
                   Learn More About Us
                 </Link>
@@ -91,10 +102,9 @@ function HeroSection() {
             </FadeIn>
           </div>
 
-          {/* Logo mark hero graphic */}
-          <FadeIn delay={120} className="hidden md:flex justify-end">
-            <LogoMark size={300} className="opacity-95" />
-          </FadeIn>
+          <div className="hidden md:flex justify-end">
+            <LogoMark size={320} color="#E8833A" sketch />
+          </div>
         </div>
       </div>
     </section>
@@ -105,22 +115,27 @@ function HeroSection() {
 
 function TrustBar() {
   const items = [
-    { icon: <PinIcon />, primary: "Based in Sweden", secondary: "Operating worldwide" },
-    { icon: <PeopleIcon />, primary: "Senior Consultants", secondary: "With real impact" },
-    { icon: <HeartIcon />, primary: "Freedom & Flexibility", secondary: "You choose what matters" },
+    { icon: <PinIcon size={20} />, primary: "Based in Sweden", secondary: "Operating worldwide" },
+    { icon: <PeopleIcon size={20} />, primary: "Senior Consultants", secondary: "With real impact" },
+    { icon: <HeartIcon size={20} />, primary: "Freedom & Flexibility", secondary: "You choose what matters" },
   ];
 
   return (
-    <div className="border-y border-[#e8d8c8] bg-[#fdfaf6]">
+    <div className="relative border-y border-[#1C1C28] bg-[#0E0E16]/55">
       <div className="mx-auto max-w-6xl px-6 py-5">
         <FadeIn>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:divide-x sm:divide-[#e8d8c8]">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:divide-x sm:divide-[#1C1C28]">
             {items.map((item) => (
               <div key={item.primary} className="flex items-center gap-3 sm:px-8 first:pl-0 last:pr-0">
-                <span className="text-[#9a7a63]" aria-hidden="true">{item.icon}</span>
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#E8833A]/25 bg-[#E8833A]/10 text-[#E8833A]"
+                  aria-hidden="true"
+                >
+                  {item.icon}
+                </span>
                 <div>
-                  <p className="text-sm font-semibold text-[#3D3027] leading-tight">{item.primary}</p>
-                  <p className="text-xs text-[#9a7a63] mt-0.5">{item.secondary}</p>
+                  <p className="font-display text-sm font-bold text-[#F7F2EA] leading-tight">{item.primary}</p>
+                  <p className="text-xs text-[#9A9089] mt-0.5">{item.secondary}</p>
                 </div>
               </div>
             ))}
@@ -166,8 +181,8 @@ function WhySection() {
     <section aria-labelledby="why-heading" className="px-6 py-20 md:py-28 bg-[#F7F2EA]">
       <div className="mx-auto max-w-5xl">
         <FadeIn className="text-center mb-14">
-          <p className="text-xs font-semibold tracking-[0.2em] text-[#9a7a63] uppercase mb-3">Why Debageri</p>
-          <h2 id="why-heading" className="text-3xl font-semibold tracking-tight text-[#3D3027] md:text-4xl">
+          <p className="font-display text-xs font-bold tracking-[0.22em] text-[#B85F1E] uppercase mb-3">Why Debageri</p>
+          <h2 id="why-heading" className="font-display text-3xl font-bold tracking-tight text-[#3D3027] md:text-4xl">
             Why work with us?
           </h2>
           <p className="mt-4 text-[#7a5e4a] max-w-lg mx-auto">
@@ -177,12 +192,13 @@ function WhySection() {
 
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5" role="list">
           {WHY_CARDS.map((card, i) => (
-            <li key={card.title}>
-              <FadeIn delay={i * 70}>
+            <li key={card.title} className="h-full">
+              {/* Staggered delay runs the reveal left to right across the row. */}
+              <FadeIn delay={i * 110} className="fi-blur h-full">
                 <div className="group h-full rounded-2xl border border-[#e8d8c8] bg-[#fdfaf6] p-6 flex flex-col gap-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-                  <span className="text-[#7a5e4a]" aria-hidden="true">{card.icon}</span>
+                  <span className="text-[#B85F1E]" aria-hidden="true">{card.icon}</span>
                   <div>
-                    <p className="font-semibold text-sm text-[#3D3027] mb-1.5">{card.title}</p>
+                    <p className="font-display font-bold text-lg leading-snug tracking-tight text-[#3D3027] mb-2">{card.title}</p>
                     <p className="text-xs leading-relaxed text-[#7a5e4a]">{card.body}</p>
                   </div>
                 </div>
@@ -197,50 +213,82 @@ function WhySection() {
 
 /* ─── Name story ─────────────────────────────────────────────────────────────── */
 
+/* Each sketch stands for one ingredient in the name: the mark for debug, the founder
+   for Bagheri, the bread for the Swedish bageri. */
+const STORY_PIECES = [
+  { src: "/story/bug-sketch.webp", alt: "Sketch of a beetle crawling over circuit traces", caption: "debug", tilt: "-rotate-2" },
+  { src: "/story/founder-sketch.webp", alt: "Sketch portrait of founder Shahab Bagheri", caption: "Bagheri", tilt: "rotate-1" },
+  { src: "/story/bageri-sketch.webp", alt: "Sketch of a Swedish bakery loaf labelled bageri", caption: "bageri", tilt: "-rotate-1" },
+];
+
 function NameStorySection() {
   return (
-    <section aria-labelledby="story-heading" className="bg-[#3D3027]">
-      <div className="mx-auto max-w-5xl px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-
-        {/* Dark panel with large logo mark */}
-        <FadeIn className="flex items-center justify-center">
-          <div className="relative flex items-center justify-center w-64 h-64 md:w-80 md:h-80">
-            {/* Glow ring */}
-            <div className="absolute inset-0 rounded-full border border-[#5a4535] opacity-40" />
-            <div className="absolute inset-6 rounded-full border border-[#5a4535] opacity-20" />
-            <LogoMark size={200} color="#c4a98e" />
-          </div>
+    <section aria-labelledby="story-heading" className="bg-[#0B0B12] px-6 py-20 md:py-28">
+      <div className="mx-auto max-w-5xl">
+        <FadeIn>
+          <ul className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 md:gap-7" role="list">
+            {STORY_PIECES.map((piece, i) => (
+              <Fragment key={piece.src}>
+                {i > 0 && (
+                  <li aria-hidden="true" className="shrink-0">
+                    <Image
+                      src="/story/plus-sketch.webp"
+                      alt=""
+                      width={160}
+                      height={160}
+                      className="h-8 w-8 opacity-80 sm:h-10 sm:w-10"
+                    />
+                  </li>
+                )}
+                <li className={`shrink-0 ${piece.tilt} transition-transform duration-500 hover:rotate-0`}>
+                  <figure className="flex flex-col items-center gap-3">
+                    <Image
+                      src={piece.src}
+                      alt={piece.alt}
+                      width={560}
+                      height={560}
+                      className="h-32 w-32 rounded-2xl border border-[#E8833A]/20 sm:h-40 sm:w-40 md:h-48 md:w-48"
+                    />
+                    <figcaption className="font-display text-xs font-bold uppercase tracking-[0.22em] text-[#D08A4F]">
+                      {piece.caption}
+                    </figcaption>
+                  </figure>
+                </li>
+              </Fragment>
+            ))}
+          </ul>
         </FadeIn>
 
-        {/* Name story */}
-        <FadeIn delay={100}>
-          <div className="w-10 h-px bg-[#9a7a63] mb-8" />
-          <h2 id="story-heading" className="text-3xl font-semibold tracking-tight text-[#F7F2EA] md:text-4xl">
-            The story behind Debageri
-          </h2>
-          <div className="mt-6 space-y-4 text-base leading-relaxed text-[#c4a98e]">
-            <p>
-              As developers, we all know the word debug. In Swedish,{" "}
-              <strong className="text-[#F7F2EA] font-semibold">bageri</strong>{" "}means
-              bakery, and it also happens to sound very similar to the
-              founder&apos;s last name, Bagheri.
-            </p>
-            <p>
-              Mixing all of this together felt like a fun and personal idea,
-              and that&apos;s how Debageri was born.
-            </p>
-            <p>
-              You can think of it as a little{" "}
-              <strong className="text-[#F7F2EA] font-semibold">&ldquo;debug bakery&rdquo;</strong>.
-            </p>
-          </div>
+        <FadeIn delay={120}>
+          <div className="mx-auto mt-16 max-w-2xl text-center">
+            <div className="mx-auto mb-8 h-px w-10 bg-[#E8833A]" />
+            <h2 id="story-heading" className="font-display text-3xl font-bold tracking-tight text-[#F7F2EA] md:text-4xl">
+              The story behind Debageri
+            </h2>
+            <div className="mt-6 space-y-4 text-base leading-relaxed text-[#C7BFB4]">
+              <p>
+                As developers, we all know the word debug. In Swedish,{" "}
+                <strong className="font-semibold text-[#F7F2EA]">bageri</strong>{" "}means
+                bakery, and it also happens to sound very similar to the
+                founder&apos;s last name, Bagheri.
+              </p>
+              <p>
+                Mixing all of this together felt like a fun and personal idea,
+                and that&apos;s how Debageri was born.
+              </p>
+              <p>
+                You can think of it as a little{" "}
+                <strong className="font-semibold text-[#F7F2EA]">&ldquo;debug bakery&rdquo;</strong>.
+              </p>
+            </div>
 
-          <div className="mt-10 inline-flex items-center gap-3 rounded-full border border-[#5a4535] px-5 py-2.5">
-            <span className="text-sm font-medium text-[#9a7a63]">debug</span>
-            <span className="text-[#5a4535]">+</span>
-            <span className="text-sm font-medium text-[#9a7a63]">bageri</span>
-            <span className="text-[#5a4535]">=</span>
-            <span className="text-sm font-semibold text-[#F7F2EA]">debageri</span>
+            <div className="mt-10 inline-flex items-center gap-3 rounded-full border border-[#3A3A4A] px-5 py-2.5">
+              <span className="text-sm font-medium text-[#D08A4F]">debug</span>
+              <span className="text-[#5C5C70]">+</span>
+              <span className="text-sm font-medium text-[#D08A4F]">bageri</span>
+              <span className="text-[#5C5C70]">=</span>
+              <span className="font-display text-sm font-bold text-[#F7F2EA]">debageri</span>
+            </div>
           </div>
         </FadeIn>
       </div>
@@ -254,7 +302,7 @@ const TEAM = [
   {
     name: "Shahab Bagheri",
     initials: "SB",
-    photo: "/team/shahab.jpg",
+    photo: "/team/shahab-portrait.webp",
     role: "CEO & Senior Java Developer",
     location: "Gothenburg, Sweden",
     current: "Currently at Zenseact",
@@ -263,7 +311,7 @@ const TEAM = [
   {
     name: "Vahid Bafghi",
     initials: "VB",
-    photo: "/team/vahid.jpg",
+    photo: "/team/vahid-portrait.webp",
     role: "Embedded Software Developer",
     location: "Gothenburg, Sweden",
     current: "Currently at Zenseact",
@@ -276,47 +324,39 @@ function TeamSection() {
     <section aria-labelledby="team-heading" className="px-6 py-20 md:py-28 bg-[#fdfaf6]">
       <div className="mx-auto max-w-4xl">
         <FadeIn className="text-center mb-14">
-          <p className="text-xs font-semibold tracking-[0.2em] text-[#9a7a63] uppercase mb-3">The team</p>
-          <h2 id="team-heading" className="text-3xl font-semibold tracking-tight text-[#3D3027] md:text-4xl">
+          <p className="font-display text-xs font-bold tracking-[0.22em] text-[#B85F1E] uppercase mb-3">The team</p>
+          <h2 id="team-heading" className="font-display text-3xl font-bold tracking-tight text-[#3D3027] md:text-4xl">
             Meet the team
           </h2>
           <p className="mt-4 text-[#7a5e4a]">We&apos;re a small team with big ambitions.</p>
         </FadeIn>
 
-        <ul className="grid gap-5 md:grid-cols-2" role="list">
+        <ul className="grid gap-14 sm:grid-cols-2" role="list">
           {TEAM.map((member, i) => (
             <li key={member.name}>
-            <FadeIn delay={i * 100}>
-              <div className="group h-full rounded-2xl border border-[#e8d8c8] bg-[#F7F2EA] overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-                {/* Warm top bar */}
-                <div className="h-1 bg-gradient-to-r from-[#c4a98e] to-[#9a7a63]" />
-                <div className="p-7">
-                  <div className="flex items-center gap-4 mb-5">
-                    <div className="w-14 h-14 rounded-full bg-[#3D3027] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      <Image
-                        src={member.photo}
-                        alt={member.name}
-                        width={56}
-                        height={56}
-                        className="w-full h-full object-cover"
-                        onError={undefined}
-                      />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-[#3D3027]">{member.name}</p>
-                      <p className="text-sm text-[#9a7a63] mt-0.5">{member.role}</p>
-                    </div>
-                  </div>
+              <FadeIn delay={i * 110} className="fi-blur">
+                <div className="group flex flex-col items-center text-center">
+                  <Image
+                    src={member.photo}
+                    alt={member.name}
+                    width={400}
+                    height={400}
+                    sizes="(min-width: 640px) 208px, 60vw"
+                    className="h-44 w-44 rounded-full object-cover ring-1 ring-[#E8833A]/30 transition-transform duration-500 ease-out group-hover:scale-105 md:h-52 md:w-52"
+                  />
+                  <p className="mt-7 font-display text-xl font-bold tracking-tight text-[#3D3027] md:text-2xl">
+                    {member.name}
+                  </p>
+                  <p className="mt-1.5 text-sm text-[#9A9089]">{member.role}</p>
 
-                  <div className="flex items-center gap-1.5 text-xs text-[#9a7a63] mb-1">
+                  <div className="mt-4 flex items-center gap-1.5 text-xs text-[#9a7a63]">
                     <PinIcon size={12} />
                     <span>{member.location}</span>
                   </div>
-                  <p className="text-xs text-[#b89880] mb-4">{member.current}</p>
-                  <p className="text-sm leading-relaxed text-[#7a5e4a]">{member.bio}</p>
+                  <p className="mt-1 text-xs text-[#b89880]">{member.current}</p>
+                  <p className="mt-5 max-w-xs text-sm leading-relaxed text-[#7a5e4a]">{member.bio}</p>
                 </div>
-              </div>
-            </FadeIn>
+              </FadeIn>
             </li>
           ))}
         </ul>
@@ -329,16 +369,16 @@ function TeamSection() {
 
 function CtaSection() {
   return (
-    <section aria-labelledby="cta-heading" className="px-6 py-20 md:py-24 bg-[#F7F2EA]">
+    <section aria-labelledby="cta-heading" className="px-6 py-20 md:py-24 bg-[#15151E]">
       <div className="mx-auto max-w-5xl">
         <FadeIn>
-          <div className="rounded-2xl border border-[#e8d8c8] bg-[#fdfaf6] px-8 py-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="rounded-2xl border border-[#2A2A38] bg-[#1E1E2A] px-8 py-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-5">
-              <div className="w-12 h-12 rounded-full bg-[#e8d8c8] flex items-center justify-center flex-shrink-0" aria-hidden="true">
+              <div className="w-12 h-12 rounded-full border border-[#E8833A]/25 bg-[#E8833A]/10 text-[#E8833A] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                 <CoffeeIcon size={22} />
               </div>
               <div>
-                <h2 id="cta-heading" className="font-semibold text-[#3D3027] text-lg">
+                <h2 id="cta-heading" className="font-display font-bold text-[#F7F2EA] text-lg">
                   Interested in joining Debageri?
                 </h2>
                 <p className="text-sm text-[#9a7a63] mt-0.5">
@@ -348,7 +388,7 @@ function CtaSection() {
             </div>
             <Link
               href="/careers"
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#3D3027] px-6 py-2.5 text-sm font-semibold text-[#F7F2EA] hover:bg-[#5a4535] transition-colors whitespace-nowrap flex-shrink-0"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-b from-[#F2924A] to-[#D9702A] px-7 py-3 text-sm font-semibold text-[#2A1B0E] hover:from-[#F6A263] hover:to-[#E27C33] transition-colors whitespace-nowrap flex-shrink-0"
             >
               View Open Positions
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -373,9 +413,9 @@ function PinIcon({ size = 15 }: { size?: number }) {
   );
 }
 
-function PeopleIcon() {
+function PeopleIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="6" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.3"/>
       <path d="M1 13.5c0-2.485 2.239-4.5 5-4.5s5 2.015 5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
       <circle cx="11.5" cy="5" r="2" stroke="currentColor" strokeWidth="1.3"/>
@@ -384,9 +424,9 @@ function PeopleIcon() {
   );
 }
 
-function HeartIcon() {
+function HeartIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path d="M8 13.5S2 9.5 2 5.5A3.5 3.5 0 0 1 8 3.58 3.5 3.5 0 0 1 14 5.5C14 9.5 8 13.5 8 13.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
     </svg>
   );
@@ -394,7 +434,7 @@ function HeartIcon() {
 
 function WalletIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <rect x="2" y="5" width="16" height="12" rx="2" stroke="currentColor" strokeWidth="1.4"/>
       <path d="M2 9h16" stroke="currentColor" strokeWidth="1.4"/>
       <circle cx="14.5" cy="13" r="1" fill="currentColor"/>
@@ -405,7 +445,7 @@ function WalletIcon() {
 
 function ShieldIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <path d="M10 2L3 5v5c0 4.418 3.134 7.628 7 8.5C13.866 17.628 17 14.418 17 10V5L10 2Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
       <path d="M7 10l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
@@ -414,7 +454,7 @@ function ShieldIcon() {
 
 function BookIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <path d="M10 4C10 4 7 3 4 4v12c3-1 6 0 6 0s3-1 6 0V4c-3-1-6 0-6 0Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
       <line x1="10" y1="4" x2="10" y2="16" stroke="currentColor" strokeWidth="1.4"/>
     </svg>
@@ -423,7 +463,7 @@ function BookIcon() {
 
 function LaptopIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <rect x="3" y="4" width="14" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
       <path d="M1 15h18" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
     </svg>
@@ -432,7 +472,7 @@ function LaptopIcon() {
 
 function GroupIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <circle cx="7.5" cy="7" r="3" stroke="currentColor" strokeWidth="1.4"/>
       <path d="M2 17c0-3.038 2.462-5.5 5.5-5.5S13 13.962 13 17" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
       <circle cx="13.5" cy="6.5" r="2.5" stroke="currentColor" strokeWidth="1.4"/>
@@ -450,52 +490,6 @@ function CoffeeIcon({ size = 24 }: { size?: number }) {
       <path d="M4 8h12l-1.5 9A2 2 0 0 1 12.515 19H7.485A2 2 0 0 1 5.5 17L4 8Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
       <path d="M16 10h2a2 2 0 1 1 0 4h-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
       <line x1="2" y1="22" x2="18" y2="22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
-/* ─── Circuit background ─────────────────────────────────────────────────────── */
-
-function CircuitBg({ className, ...props }: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 1200 700"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      preserveAspectRatio="xMidYMid slice"
-      style={{ opacity: 0.045 }}
-      {...props}
-    >
-      {/* Horizontal traces */}
-      <line x1="0"    y1="120" x2="300"  y2="120" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="400"  y1="120" x2="700"  y2="120" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="800"  y1="200" x2="1200" y2="200" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="0"    y1="350" x2="200"  y2="350" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="500"  y1="450" x2="900"  y2="450" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="1000" y1="550" x2="1200" y2="550" stroke="#3D3027" strokeWidth="1.5"/>
-
-      {/* Vertical traces */}
-      <line x1="300"  y1="0"   x2="300"  y2="120" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="300"  y1="120" x2="300"  y2="300" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="700"  y1="0"   x2="700"  y2="120" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="700"  y1="200" x2="700"  y2="450" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="200"  y1="350" x2="200"  y2="700" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="900"  y1="200" x2="900"  y2="450" stroke="#3D3027" strokeWidth="1.5"/>
-      <line x1="1000" y1="450" x2="1000" y2="700" stroke="#3D3027" strokeWidth="1.5"/>
-
-      {/* Nodes */}
-      {[
-        [300,120],[700,120],[700,200],[300,300],
-        [200,350],[700,450],[900,450],[1000,550],
-      ].map(([x,y]) => (
-        <circle key={`${x}-${y}`} cx={x} cy={y} r="5" fill="#3D3027"/>
-      ))}
-
-      {/* IC chip rectangles */}
-      <rect x="280" y="280" width="40" height="40" rx="4" stroke="#3D3027" strokeWidth="1.5" fill="none"/>
-      <rect x="880" y="180" width="40" height="40" rx="4" stroke="#3D3027" strokeWidth="1.5" fill="none"/>
-      <rect x="180" y="430" width="40" height="40" rx="4" stroke="#3D3027" strokeWidth="1.5" fill="none"/>
     </svg>
   );
 }

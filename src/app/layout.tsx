@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Cairo, Inter } from "next/font/google";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const cairo = Cairo({
+  variable: "--font-cairo",
   subsets: ["latin"],
   display: "swap",
 });
@@ -35,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
+    <html lang="en" className={`${inter.variable} ${cairo.variable} h-full`}>
       <body className="min-h-full flex flex-col antialiased">
         {children}
         <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
