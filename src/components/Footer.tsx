@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LogoLink } from "@/components/Logo";
 import { CookieSettingsButton } from "@/components/CookieSettingsButton";
+import { ArrowUpIcon } from "@/components/icons";
 
 const footerLinks = [
   { href: "/", label: "Home" },
@@ -150,7 +151,7 @@ export default function Footer() {
               aria-label="Back to top"
               className="group inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#23232E] bg-[#0C0C14] text-[#C7BFB4] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#E8833A]/55 hover:text-[#E8833A]"
             >
-              <ArrowUpIcon />
+              <ArrowUpIcon size={14} />
             </a>
           </div>
         </div>
@@ -213,10 +214,3 @@ function IdIcon() {
   );
 }
 
-function ArrowUpIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M7 11.5V3M3 7l4-4 4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}

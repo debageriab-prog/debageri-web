@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { JobStatus } from "@/types/job";
+import { ArrowRightIcon, TraceIcon } from "@/components/icons";
 
 interface SerializedJob {
   id: string;
@@ -39,7 +40,7 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
   if (jobs.length === 0) {
     return (
       <div className="rounded-2xl border border-[#e8d8c8] bg-[#F7F2EA] px-7 py-16 text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#E8833A]/25 bg-[#E8833A]/10 text-xl text-[#B85F1E]" aria-hidden="true">⌁</span>
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#E8833A]/25 bg-[#E8833A]/10 text-[#B85F1E]"><TraceIcon size={24} /></span>
         <h3 className="mt-5 font-display text-xl font-bold tracking-tight text-[#3D3027]">No open roles today.</h3>
         <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-[#7a5e4a]">The right opportunity is worth waiting for. Check back soon or introduce yourself below.</p>
       </div>
@@ -83,8 +84,8 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
                       </div>
                       <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-[#3D3027] sm:text-3xl">{job.title}</h3>
                     </div>
-                    <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-[#e8d8c8] bg-[#fdfaf6] text-[#7a5e4a] transition-all duration-300 group-hover:translate-x-1 group-hover:border-[#E8833A]/45 group-hover:bg-[#E8833A]/10 group-hover:text-[#B85F1E]" aria-hidden="true">
-                      →
+                    <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-[#e8d8c8] bg-[#fdfaf6] text-[#7a5e4a] transition-all duration-300 group-hover:translate-x-1 group-hover:border-[#E8833A]/45 group-hover:bg-[#E8833A]/10 group-hover:text-[#B85F1E]">
+                      <ArrowRightIcon size={15} />
                     </span>
                   </div>
 

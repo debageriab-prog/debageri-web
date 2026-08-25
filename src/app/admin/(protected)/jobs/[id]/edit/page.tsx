@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeftIcon } from "@/components/icons";
 import { notFound } from "next/navigation";
 import { AdminJobForm } from "@/components/AdminJobForm";
 import { DeleteJobButton } from "@/components/DeleteJobButton";
@@ -14,7 +15,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-10 md:py-14">
-      <Link href="/admin/jobs" className="inline-flex items-center gap-2 text-sm font-medium text-[#7a5e4a] hover:text-[#3D3027]"><span aria-hidden="true">←</span> Back to jobs</Link>
+      <Link href="/admin/jobs" className="inline-flex items-center gap-2 text-sm font-medium text-[#7a5e4a] hover:text-[#3D3027]"><ArrowLeftIcon /> Back to jobs</Link>
       <div className="mt-6 rounded-2xl border border-[#e8d8c8] bg-[#fdfaf6] p-6 shadow-[0_20px_60px_rgba(61,48,39,0.05)] sm:p-9">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>

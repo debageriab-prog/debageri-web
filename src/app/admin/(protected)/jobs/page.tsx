@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRightIcon } from "@/components/icons";
 import { getAllJobs } from "@/lib/jobs";
 
 export const metadata: Metadata = { title: "Jobs" };
@@ -42,7 +43,7 @@ export default async function AdminJobsPage({ searchParams }: { searchParams: Pr
                   </div>
                   <p className="mt-1 text-xs text-[#9a7a63]">{job.id} · {job.cities.join(", ")} · {job.languages.join(", ")}{job.expiresAt ? ` · Expires ${formatDate(job.expiresAt)}` : ""}</p>
                 </div>
-                <span className="text-sm font-semibold text-[#7a5e4a]">Edit →</span>
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#7a5e4a]">Edit <ArrowRightIcon /></span>
                 </Link>
               </li>
             ))}

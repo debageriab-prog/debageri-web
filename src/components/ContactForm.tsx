@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { getAppCheckToken } from "@/lib/firebase/client";
 import type { ContactFieldErrors } from "@/types/contact-message";
+import { ArrowRightIcon, CheckIcon } from "@/components/icons";
 
 interface FormValues {
   fullName: string;
@@ -65,7 +66,7 @@ export function ContactForm() {
     return (
       <div className="flex min-h-96 flex-col items-center justify-center text-center" role="status">
         <span className="flex h-16 w-16 items-center justify-center rounded-full border border-[#E8833A]/25 bg-[#E8833A]/10 text-[#B85F1E]">
-          <CheckIcon />
+          <CheckIcon size={28} />
         </span>
         <h3 className="mt-6 font-display text-2xl font-bold tracking-tight text-[#3D3027]">
           Message received.
@@ -174,7 +175,7 @@ export function ContactForm() {
           className="inline-flex min-w-36 items-center justify-center gap-2 rounded-full bg-gradient-to-b from-[#F2924A] to-[#D9702A] px-7 py-3.5 text-sm font-semibold text-[#2A1B0E] shadow-lg shadow-[#E8833A]/20 transition-colors hover:from-[#F6A263] hover:to-[#E27C33] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? "Sending…" : "Send message"}
-          {!isSubmitting && <ArrowIcon />}
+          {!isSubmitting && <ArrowRightIcon />}
         </button>
       </div>
     </form>
@@ -212,18 +213,4 @@ function inputClassName(hasError: boolean) {
   }`;
 }
 
-function ArrowIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
-function CheckIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="m5 12 4 4L19 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}

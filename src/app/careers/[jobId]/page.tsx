@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { FadeIn } from "@/components/FadeIn";
+import { ArrowLeftIcon } from "@/components/icons";
 import { PageHero } from "@/components/PageHero";
 import { JobApplicationModal } from "@/components/JobApplicationModal";
 import { getPublishedJob } from "@/lib/jobs";
@@ -45,12 +46,7 @@ export default async function JobPage({ params }: JobPageProps) {
               href="/careers"
               className="group inline-flex items-center gap-2 text-sm font-semibold text-[#C7BFB4] transition-colors hover:text-[#E8833A]"
             >
-              <span
-                className="transition-transform duration-300 group-hover:-translate-x-1"
-                aria-hidden="true"
-              >
-                ←
-              </span>
+              <ArrowLeftIcon className="transition-transform duration-300 group-hover:-translate-x-1" />
               Back to careers
             </Link>
           }
