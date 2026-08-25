@@ -39,8 +39,8 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
   if (jobs.length === 0) {
     return (
       <div className="rounded-2xl border border-[#e8d8c8] bg-[#F7F2EA] px-7 py-16 text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#e8d8c8] text-xl text-[#5a4535]" aria-hidden="true">⌁</span>
-        <h3 className="mt-5 text-xl font-semibold text-[#3D3027]">No open roles today.</h3>
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#E8833A]/25 bg-[#E8833A]/10 text-xl text-[#B85F1E]" aria-hidden="true">⌁</span>
+        <h3 className="mt-5 font-display text-xl font-bold tracking-tight text-[#3D3027]">No open roles today.</h3>
         <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-[#7a5e4a]">The right opportunity is worth waiting for. Check back soon or introduce yourself below.</p>
       </div>
     );
@@ -57,7 +57,7 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by role, city, language, or job ID..."
-          className="w-full rounded-xl border border-[#e8d8c8] bg-[#F7F2EA] py-4 pl-12 pr-28 text-base text-[#3D3027] placeholder:text-[#b89880] focus:border-[#9a7a63] focus:outline-none"
+          className="w-full rounded-full border border-[#e8d8c8] bg-[#F7F2EA] py-4 pl-12 pr-28 text-base text-[#3D3027] transition-colors placeholder:text-[#b89880] focus:border-[#B85F1E] focus:outline-none"
         />
         <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-[#9a7a63]">
           {filteredJobs.length} {filteredJobs.length === 1 ? "role" : "roles"}
@@ -66,24 +66,24 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
 
       {filteredJobs.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-[#c4a98e] px-6 py-14 text-center">
-          <p className="font-semibold text-[#3D3027]">No matching opportunities.</p>
+          <p className="font-display font-bold text-[#3D3027]">No matching opportunities.</p>
           <p className="mt-2 text-sm text-[#9a7a63]">Try a different role, city, language, or job ID.</p>
-          <button type="button" onClick={() => setQuery("")} className="mt-5 text-sm font-semibold text-[#5a4535] underline decoration-[#c4a98e] underline-offset-4">Clear search</button>
+          <button type="button" onClick={() => setQuery("")} className="mt-5 text-sm font-semibold text-[#B85F1E] underline decoration-[#E8833A]/40 underline-offset-4 hover:decoration-[#E8833A]">Clear search</button>
         </div>
       ) : (
         <ul className="mt-6 space-y-5" role="list">
           {filteredJobs.map((job) => (
             <li key={job.id}>
-              <Link href={`/careers/${encodeURIComponent(job.id)}`} className="group block rounded-2xl border border-[#e8d8c8] bg-[#F7F2EA] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#c4a98e] hover:shadow-[0_12px_36px_rgba(61,48,39,0.08)] sm:p-8">
+              <Link href={`/careers/${encodeURIComponent(job.id)}`} className="group block rounded-2xl border border-[#e8d8c8] bg-[#F7F2EA] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#E8833A]/45 hover:shadow-[0_16px_40px_rgba(184,95,30,0.12)] sm:p-8">
                   <div className="flex items-start justify-between gap-5">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-[#e8d8c8] px-2.5 py-1 font-mono text-[11px] font-semibold text-[#7a5e4a]">{job.id}</span>
+                        <span className="rounded-full border border-[#E8833A]/25 bg-[#E8833A]/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-[#B85F1E]">{job.id}</span>
                         <span className="text-xs text-[#9a7a63]">Published {formatDate(job.publishedAt)}</span>
                       </div>
-                      <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[#3D3027] sm:text-3xl">{job.title}</h3>
+                      <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-[#3D3027] sm:text-3xl">{job.title}</h3>
                     </div>
-                    <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-[#e8d8c8] bg-[#fdfaf6] text-[#7a5e4a] transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">
+                    <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-[#e8d8c8] bg-[#fdfaf6] text-[#7a5e4a] transition-all duration-300 group-hover:translate-x-1 group-hover:border-[#E8833A]/45 group-hover:bg-[#E8833A]/10 group-hover:text-[#B85F1E]" aria-hidden="true">
                       →
                     </span>
                   </div>
@@ -92,7 +92,7 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
                     <SummaryMeta label="Deadline" value={job.expiresAt ? formatDate(job.expiresAt) : "Open until filled"} icon={<CalendarIcon />} />
                     <SummaryMeta label="Cities" value={compactValues(job.cities)} icon={<PinIcon />} />
                     <SummaryMeta label="Languages" value={compactValues(job.languages)} icon={<LanguageIcon />} />
-                    <div className="flex items-center justify-start gap-2 text-sm font-semibold text-[#5a4535] lg:justify-end">
+                    <div className="flex items-center justify-start gap-2 text-sm font-semibold text-[#B85F1E] lg:justify-end">
                       View opportunity
                     </div>
                   </div>
@@ -108,7 +108,7 @@ export function CareersList({ jobs }: { jobs: SerializedJob[] }) {
 function SummaryMeta({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
   return (
     <div className="min-w-0">
-      <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9a7a63]">{icon}{label}</p>
+      <p className="flex items-center gap-1.5 font-display text-[11px] font-bold uppercase tracking-[0.16em] text-[#9a7a63]">{icon}{label}</p>
       <p className="mt-1 truncate text-sm font-medium text-[#5a4535]" title={value}>{value}</p>
     </div>
   );
