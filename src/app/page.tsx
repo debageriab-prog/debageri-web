@@ -302,7 +302,7 @@ const TEAM = [
   {
     name: "Shahab Bagheri",
     initials: "SB",
-    photo: "/team/shahab-portrait.webp",
+    photo: "/team/shahab.jpg",
     role: "CEO & Senior Java Developer",
     location: "Gothenburg, Sweden",
     current: "Currently at Zenseact",
@@ -311,7 +311,7 @@ const TEAM = [
   {
     name: "Vahid Bafghi",
     initials: "VB",
-    photo: "/team/vahid-portrait.webp",
+    photo: "/team/vahid.jpg",
     role: "Embedded Software Developer",
     location: "Gothenburg, Sweden",
     current: "Currently at Zenseact",
