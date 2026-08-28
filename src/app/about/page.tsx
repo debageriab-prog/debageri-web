@@ -128,7 +128,6 @@ function StorySection() {
 function FounderQuote() {
   return (
     <FadeIn delay={120} className="fi-blur">
-      {/* TODO: draft wording — needs Shahab's sign-off before this ships. */}
       <figure className="mt-16 grid gap-7 rounded-2xl border border-[#e8d8c8] bg-[#F7F2EA] p-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-9 md:p-10">
         <Image
           src="/team/shahab.jpg"
