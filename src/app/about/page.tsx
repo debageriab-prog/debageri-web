@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import { CompensationMix } from "@/components/CompensationMix";
 import { FadeIn } from "@/components/FadeIn";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { LogoMark } from "@/components/Logo";
+import { NameEquation } from "@/components/NameEquation";
 import { PageHero } from "@/components/PageHero";
+import { ScrollHint } from "@/components/ScrollHint";
+import { SwedenMap } from "@/components/SwedenMap";
 import { ArrowRightIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -20,24 +25,18 @@ const principles = [
   {
     title: "Trust comes first",
     body: "We hire experienced people and trust them to make good decisions. That means open communication, short paths, and room to do your best work.",
+    practice: "You talk to the founder, not to a chain of managers.",
   },
   {
     title: "Freedom should be real",
     body: "Your work should support the life and career you want. We make space for flexibility, autonomy, and choices that are genuinely yours.",
+    practice: "You choose your own mix of salary, pension, gear and learning.",
   },
   {
     title: "Craft matters",
     body: "Good software is built with care. We value thoughtful engineering, continuous learning, and solutions that remain useful long after delivery.",
+    practice: "Courses and conferences are part of the budget, not a favour.",
   },
-];
-
-const compensationChoices = [
-  "Salary",
-  "Pension",
-  "Equipment",
-  "Conferences",
-  "Education",
-  "Car leasing",
 ];
 
 export default function AboutPage() {
@@ -62,13 +61,16 @@ export default function AboutPage() {
             </p>
           }
           aside={<LogoMark size={260} color="#E8833A" sketch />}
+          dense
         />
+        <NameEquation />
         <StorySection />
         <PrinciplesSection />
         <CompensationSection />
-        <NameSection />
+        <LocationSection />
         <CtaSection />
       </main>
+      <ScrollHint />
       <Footer />
     </>
   );
@@ -77,51 +79,87 @@ export default function AboutPage() {
 function StorySection() {
   return (
     <section aria-labelledby="story-heading" className="bg-[#fdfaf6] px-6 py-20 md:py-28">
-      <div className="mx-auto grid max-w-5xl gap-12 md:grid-cols-[0.65fr_1.35fr] md:gap-20">
-        <FadeIn>
-          <div>
-            <p className="font-display text-xs font-bold uppercase tracking-[0.22em] text-[#B85F1E]">
-              Our story
-            </p>
-            <div className="mt-5 h-px w-12 bg-[#E8833A]" />
-          </div>
-        </FadeIn>
-        <FadeIn delay={80} className="fi-blur">
-          <div>
-            <h2
-              id="story-heading"
-              className="font-display text-3xl font-bold tracking-tight text-[#3D3027] md:text-4xl"
-            >
-              Small by design. Ambitious by nature.
-            </h2>
-            <div className="mt-7 space-y-5 text-base leading-relaxed text-[#7a5e4a] md:text-lg">
-              <p>
-                Debageri was founded in Gothenburg by Shahab Bagheri, a senior
-                Java developer who wanted to build the kind of consultancy he
-                would choose to work for himself.
+      <div className="mx-auto max-w-5xl">
+        <div className="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-20">
+          <FadeIn>
+            <div>
+              <p className="font-display text-xs font-bold uppercase tracking-[0.22em] text-[#B85F1E]">
+                Our story
               </p>
-              <p>
-                That means staying personal as we grow. No layers of management,
-                no generic career templates, and no distance between the people
-                doing the work and the decisions that shape the company.
-              </p>
-              <p>
-                Today, our consultants work on complex software and embedded
-                systems where quality matters. We bring senior expertise to our
-                clients and build long-term relationships through useful work,
-                honest communication, and dependable delivery.
-              </p>
+              <div className="mt-5 h-px w-12 bg-[#E8833A]" />
+              <h2
+                id="story-heading"
+                className="mt-7 font-display text-3xl font-bold tracking-tight text-[#3D3027] md:text-4xl"
+              >
+                Small by design. Ambitious by nature.
+              </h2>
             </div>
-          </div>
-        </FadeIn>
+          </FadeIn>
+          <FadeIn delay={80} className="fi-blur">
+            <div>
+              <div className="space-y-5 text-base leading-relaxed text-[#7a5e4a] md:text-lg">
+                <p>
+                  Debageri was founded in Gothenburg by Shahab Bagheri, a senior
+                  Java developer who wanted to build the kind of consultancy he
+                  would choose to work for himself.
+                </p>
+                <p>
+                  That means staying personal as we grow. No layers of management,
+                  no generic career templates, and no distance between the people
+                  doing the work and the decisions that shape the company.
+                </p>
+                <p>
+                  Today, our consultants work on complex software and embedded
+                  systems where quality matters. We bring senior expertise to our
+                  clients and build long-term relationships through useful work,
+                  honest communication, and dependable delivery.
+                </p>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+
+        <FounderQuote />
       </div>
     </section>
   );
 }
 
+function FounderQuote() {
+  return (
+    <FadeIn delay={120} className="fi-blur">
+      {/* TODO: draft wording — needs Shahab's sign-off before this ships. */}
+      <figure className="mt-16 grid gap-7 rounded-2xl border border-[#e8d8c8] bg-[#F7F2EA] p-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-9 md:p-10">
+        <Image
+          src="/team/shahab.jpg"
+          alt="Portrait of Shahab Bagheri"
+          width={400}
+          height={400}
+          sizes="112px"
+          className="h-28 w-28 rounded-full object-cover ring-1 ring-[#E8833A]/30"
+        />
+        <div>
+          <blockquote className="font-display text-xl leading-snug font-bold tracking-tight text-[#3D3027] md:text-2xl">
+            &ldquo;I wanted to build the consultancy I would have joined myself.
+            That starts by trusting people who already know how to do the
+            work.&rdquo;
+          </blockquote>
+          <figcaption className="mt-4 text-sm text-[#9a7a63]">
+            Shahab Bagheri
+            <span className="text-[#c4a98e]"> — Founder &amp; CEO</span>
+          </figcaption>
+        </div>
+      </figure>
+    </FadeIn>
+  );
+}
+
 function PrinciplesSection() {
   return (
-    <section aria-labelledby="principles-heading" className="bg-[#F7F2EA] px-6 py-20 md:py-28">
+    <section
+      aria-labelledby="principles-heading"
+      className="border-t border-[#e8d8c8] bg-[#F7F2EA] px-6 py-20 md:py-28"
+    >
       <div className="mx-auto max-w-5xl">
         <FadeIn className="mb-12 max-w-2xl">
           <p className="mb-3 font-display text-xs font-bold uppercase tracking-[0.22em] text-[#B85F1E]">
@@ -139,13 +177,24 @@ function PrinciplesSection() {
           {principles.map((principle, index) => (
             <li key={principle.title} className="h-full">
               <FadeIn delay={index * 110} className="fi-blur h-full">
-                <div className="h-full rounded-2xl border border-[#e8d8c8] bg-[#fdfaf6] p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-md md:p-8">
-                  <span className="mb-5 block h-px w-8 bg-[#E8833A]" aria-hidden="true" />
-                  <h3 className="font-display text-lg font-bold leading-snug tracking-tight text-[#3D3027]">
+                <div className="group flex h-full flex-col rounded-2xl border border-[#e8d8c8] bg-[#fdfaf6] p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-md md:p-8">
+                  <span
+                    className="font-display text-4xl font-bold leading-none text-[#e8d8c8] transition-colors duration-300 group-hover:text-[#E8833A]/40"
+                    aria-hidden="true"
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="mt-6 font-display text-lg font-bold leading-snug tracking-tight text-[#3D3027]">
                     {principle.title}
                   </h3>
                   <p className="mt-2.5 text-sm leading-relaxed text-[#7a5e4a]">
                     {principle.body}
+                  </p>
+                  <p className="mt-auto border-t border-[#e8d8c8] pt-5 text-sm leading-relaxed text-[#9a7a63]">
+                    <span className="font-display text-xs font-bold uppercase tracking-[0.18em] text-[#B85F1E]">
+                      In practice
+                    </span>
+                    <span className="mt-2 block">{principle.practice}</span>
                   </p>
                 </div>
               </FadeIn>
@@ -160,9 +209,9 @@ function PrinciplesSection() {
 function CompensationSection() {
   return (
     <section aria-labelledby="compensation-heading" className="bg-[#0B0B12] px-6 py-20 md:py-28">
-      <div className="mx-auto grid max-w-5xl gap-12 md:grid-cols-2 md:items-center md:gap-20">
+      <div className="mx-auto max-w-5xl">
         <FadeIn>
-          <div>
+          <div className="max-w-2xl">
             <p className="mb-4 font-display text-xs font-bold uppercase tracking-[0.22em] text-[#D08A4F]">
               A fairer model
             </p>
@@ -181,21 +230,11 @@ function CompensationSection() {
           </div>
         </FadeIn>
 
+        {/* Full width, not a side column: the segments have to be wide enough to
+            carry their own names. */}
         <FadeIn delay={110} className="fi-blur">
-          <div className="rounded-2xl border border-[#2A2A38] bg-[#1E1E2A] p-7 md:p-8">
-            <p className="font-display text-sm font-bold text-[#F7F2EA]">Shape your own mix</p>
-            <ul className="mt-6 grid grid-cols-2 gap-3" role="list">
-              {compensationChoices.map((choice) => (
-                <li key={choice} className="flex items-center gap-2.5 text-sm text-[#C7BFB4]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#E8833A]" aria-hidden="true" />
-                  {choice}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-7 border-t border-[#2A2A38] pt-6 text-xs leading-relaxed text-[#9A9089]">
-              The details are planned together, transparently and within the
-              practical rules that apply.
-            </p>
+          <div className="mt-12">
+            <CompensationMix />
           </div>
         </FadeIn>
       </div>
@@ -203,61 +242,38 @@ function CompensationSection() {
   );
 }
 
-function NameSection() {
+function LocationSection() {
   return (
-    <section aria-labelledby="name-heading" className="bg-[#fdfaf6] px-6 py-20 md:py-28">
-      <div className="mx-auto max-w-5xl">
-        <FadeIn className="text-center">
-          <p className="font-display text-xs font-bold uppercase tracking-[0.22em] text-[#B85F1E]">
-            What is a Debageri?
-          </p>
-          <h2
-            id="name-heading"
-            className="mx-auto mt-4 max-w-2xl font-display text-3xl font-bold tracking-tight text-[#3D3027] md:text-4xl"
-          >
-            Part debug. Part bakery. Entirely personal.
-          </h2>
+    <section aria-labelledby="location-heading" className="bg-[#fdfaf6] px-6 py-20 md:py-28">
+      <div className="mx-auto grid max-w-4xl items-center gap-14 sm:grid-cols-[1fr_auto] sm:gap-20">
+        <FadeIn>
+          <div>
+            <p className="font-display text-xs font-bold tracking-[0.22em] text-[#B85F1E] uppercase">
+              Where we are
+            </p>
+            <h2
+              id="location-heading"
+              className="mt-4 font-display text-3xl font-bold tracking-tight text-[#3D3027] md:text-4xl"
+            >
+              Rooted on the{" "}
+              <em className="not-italic text-[#B85F1E]">west coast.</em>
+            </h2>
+            <p className="mt-6 max-w-md text-base leading-relaxed text-[#7a5e4a]">
+              Debageri is based in Gothenburg, and that is where you will find us
+              when you want to talk in person. Our consultants work with clients
+              across Sweden and beyond.
+            </p>
+            <p className="mt-7 font-display text-xs font-bold tracking-[0.18em] text-[#9a7a63] uppercase tabular-nums">
+              57.70&deg; N, 11.97&deg; E
+            </p>
+          </div>
         </FadeIn>
 
-        <div className="mx-auto mt-12 grid max-w-4xl items-stretch gap-3 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
-          <FadeIn className="fi-blur h-full">
-            <WordCard word="debug" detail="The craft of finding and fixing what matters." />
-          </FadeIn>
-          <Operator>+</Operator>
-          <FadeIn delay={110} className="fi-blur h-full">
-            <WordCard word="bageri" detail="Swedish for bakery: careful work from raw ingredients." />
-          </FadeIn>
-          <Operator>+</Operator>
-          <FadeIn delay={220} className="fi-blur h-full">
-            <WordCard word="Bagheri" detail="The founder&rsquo;s surname, baked right into the name." />
-          </FadeIn>
-        </div>
-
-        <FadeIn delay={300}>
-          <p className="mx-auto mt-10 max-w-2xl text-center text-base leading-relaxed text-[#7a5e4a]">
-            Mix them together and you get Debageri: a little debug bakery where
-            technical ingredients become software people can actually use.
-          </p>
+        <FadeIn delay={110} className="fi-blur">
+          <SwedenMap />
         </FadeIn>
       </div>
     </section>
-  );
-}
-
-function WordCard({ word, detail }: { word: string; detail: string }) {
-  return (
-    <div className="h-full rounded-2xl border border-[#e8d8c8] bg-[#F7F2EA] p-6 text-center">
-      <p className="font-display text-lg font-bold text-[#B85F1E]">{word}</p>
-      <p className="mt-3 text-xs leading-relaxed text-[#7a5e4a]">{detail}</p>
-    </div>
-  );
-}
-
-function Operator({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="flex items-center justify-center py-1 text-xl text-[#c4a98e]" aria-hidden="true">
-      {children}
-    </span>
   );
 }
 
@@ -294,4 +310,3 @@ function CtaSection() {
     </section>
   );
 }
-

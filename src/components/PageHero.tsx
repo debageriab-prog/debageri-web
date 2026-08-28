@@ -15,6 +15,8 @@ interface PageHeroProps {
   /** Rendered above the eyebrow — a back link, breadcrumb, or similar. */
   above?: ReactNode;
   align?: "left" | "center";
+  /** Trims the lower padding, for pages whose next section has to reach the fold. */
+  dense?: boolean;
 }
 
 /**
@@ -32,6 +34,7 @@ export function PageHero({
   aside,
   above,
   align = "left",
+  dense = false,
 }: PageHeroProps) {
   const centred = align === "center";
 
@@ -43,7 +46,13 @@ export function PageHero({
     >
       <HeroSpheres variant="page" />
 
-      <div className="relative mx-auto max-w-6xl px-6 pt-[136px] pb-16 md:pt-[184px] md:pb-24">
+      <div
+        className={`relative mx-auto max-w-6xl px-6 ${
+          dense
+            ? "pt-[112px] pb-8 md:pt-[148px] md:pb-10"
+            : "pt-[136px] pb-16 md:pt-[184px] md:pb-24"
+        }`}
+      >
         <div
           className={
             aside
