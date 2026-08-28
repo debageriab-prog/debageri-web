@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState, useEffect } from "react";
+import { LogoMark } from "@/components/Logo";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -15,31 +15,44 @@ const navLinks = [
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // Pages with no dark hero have nothing for a transparent bar to sit on, so they
+  // stay solid throughout. Defaults to false so the bar renders solid before
+  // hydration rather than flashing cream text over a light page.
+  const [hasHero, setHasHero] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const hero = document.querySelector("[data-hero]");
+
+    const update = () => {
+      setHasHero(hero !== null);
+      setScrolled(window.scrollY > 8);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
   }, []);
+
+  const solid = scrolled || !hasHero;
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-[#F7F2EA]/95 backdrop-blur-md shadow-sm py-2"
-          : "bg-[#F7F2EA] py-4"
-      } border-b border-[#e8d8c8]`}
+      // Fixed rather than sticky: a transparent bar must occupy no layout space at
+      // all, or the body colour shows through the gap it reserves.
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2" : "py-4"} ${
+        solid ? "bg-[#0B0B12]/75 backdrop-blur-md shadow-sm shadow-black/30" : "bg-transparent"
+      }`}
     >
       <div className="mx-auto max-w-6xl px-6 flex items-center justify-between gap-8">
-        <Link href="/" aria-label="Debageri AB home" className="inline-flex transition-opacity hover:opacity-75">
-          <Image
-            src="/debageri.svg"
-            alt="Debageri"
-            width={135}
-            height={40}
-            priority
-            className={scrolled ? "h-[22px] w-auto" : "h-7 w-auto"}
-          />
+        <Link
+          href="/"
+          aria-label="Debageri AB home"
+          className="inline-flex items-center gap-2.5 transition-opacity hover:opacity-75"
+        >
+          <LogoMark size={scrolled ? 26 : 32} color="#E8833A" />
+          <span className="font-display text-xl font-bold tracking-tight text-[#F7F2EA] md:text-[1.35rem]">
+            Debageri
+          </span>
         </Link>
 
         {/* Desktop nav */}
@@ -48,7 +61,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-[#5a4535] hover:text-[#3D3027] transition-colors"
+              className="text-sm font-medium text-[#C7BFB4] hover:text-[#F7F2EA] transition-colors"
             >
               {link.label}
             </Link>
@@ -59,7 +72,7 @@ export default function Header() {
         <div className="hidden md:block">
           <Link
             href="/careers"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#3D3027] px-5 py-2 text-sm font-medium text-[#F7F2EA] hover:bg-[#5a4535] transition-colors whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#E8833A] px-5 py-2 text-sm font-medium text-[#E8833A] hover:bg-[#E8833A] hover:text-[#2A1B0E] transition-colors whitespace-nowrap"
           >
             View Open Positions
             <ArrowRight />
@@ -69,28 +82,28 @@ export default function Header() {
         {/* Mobile hamburger */}
         <button
           type="button"
-          className="md:hidden flex flex-col gap-1.5 p-2 rounded-md hover:bg-[#e8d8c8] transition-colors"
+          className="md:hidden flex flex-col gap-1.5 p-2 rounded-md hover:bg-[#1A1A24] transition-colors"
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
           aria-label="Toggle navigation menu"
           onClick={() => setMenuOpen((p) => !p)}
         >
-          <span className={`block h-0.5 w-5 bg-[#3D3027] transition-transform origin-center ${menuOpen ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`block h-0.5 w-5 bg-[#3D3027] transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
-          <span className={`block h-0.5 w-5 bg-[#3D3027] transition-transform origin-center ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
+          <span className={`block h-0.5 w-5 bg-[#F7F2EA] transition-transform origin-center ${menuOpen ? "translate-y-2 rotate-45" : ""}`} />
+          <span className={`block h-0.5 w-5 bg-[#F7F2EA] transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
+          <span className={`block h-0.5 w-5 bg-[#F7F2EA] transition-transform origin-center ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </div>
 
       {menuOpen && (
-        <nav id="mobile-menu" aria-label="Mobile navigation" className="md:hidden border-t border-[#e8d8c8] px-6 py-5 flex flex-col gap-4 bg-[#F7F2EA]">
+        <nav id="mobile-menu" aria-label="Mobile navigation" className="md:hidden border-t border-[#1E1E2A] px-6 py-5 flex flex-col gap-4 bg-[#0B0B12]">
           {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="text-base font-medium text-[#3D3027]" onClick={() => setMenuOpen(false)}>
+            <Link key={link.href} href={link.href} className="text-base font-medium text-[#F7F2EA]" onClick={() => setMenuOpen(false)}>
               {link.label}
             </Link>
           ))}
           <Link
             href="/careers"
-            className="mt-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#3D3027] px-5 py-2.5 text-sm font-medium text-[#F7F2EA]"
+            className="mt-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-[#E8833A] px-5 py-2.5 text-sm font-medium text-[#E8833A]"
             onClick={() => setMenuOpen(false)}
           >
             View Open Positions <ArrowRight />

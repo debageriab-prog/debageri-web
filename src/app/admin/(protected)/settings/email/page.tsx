@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeftIcon } from "@/components/icons";
 import { getEmailSettings } from "@/lib/email-settings";
 import { updateEmailSettings } from "../actions";
 
@@ -20,9 +21,9 @@ export default async function EmailSettingsPage({
     <main className="mx-auto max-w-4xl px-6 py-10 md:py-14">
       <Link
         href="/admin/settings"
-        className="text-sm font-semibold text-[#7a5e4a]"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-[#7a5e4a]"
       >
-        ← Settings
+        <ArrowLeftIcon /> Settings
       </Link>
       <div className="mt-6">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9a7a63]">

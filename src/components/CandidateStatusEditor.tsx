@@ -14,6 +14,7 @@ import {
   type ApplicationStatus,
 } from "@/types/application";
 import type { EmailTemplate } from "@/types/email";
+import { CheckIcon, CloseIcon } from "@/components/icons";
 
 const INITIAL_STATE: CandidateUpdateState = {
   message: "",
@@ -110,9 +111,9 @@ export function CandidateStatusEditor({
             type="button"
             onClick={close}
             aria-label="Close status editor"
-            className="flex size-9 items-center justify-center rounded-full border border-[#c4a98e] text-xl"
+            className="flex size-9 items-center justify-center rounded-full border border-[#c4a98e]"
           >
-            ×
+            <CloseIcon size={15} />
           </button>
         </header>
         {state.statusSaved ? (
@@ -121,7 +122,7 @@ export function CandidateStatusEditor({
               className={`mx-auto flex size-12 items-center justify-center rounded-full ${state.ok ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}
               aria-hidden="true"
             >
-              ✓
+              <CheckIcon size={22} />
             </div>
             <p role="status" className="mt-4 text-lg font-semibold">
               {state.message}

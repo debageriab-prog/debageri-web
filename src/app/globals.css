@@ -15,6 +15,7 @@
   --color-beige-100: #f0e8dc;
   --color-card: #fdfaf6;
   --font-sans: var(--font-inter);
+  --font-display: var(--font-cairo);
 }
 
 *,
@@ -44,6 +45,25 @@ body {
   outline: 2px solid #9a7a63;
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* Tailwind's preflight resets buttons to the default arrow; anything clickable
+   should read as clickable. */
+a[href],
+label[for],
+summary,
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+input[type="checkbox"]:not(:disabled),
+input[type="radio"]:not(:disabled),
+input[type="file"]:not(:disabled),
+select:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
 }
 
 .job-rich-text h2 {
@@ -100,4 +120,559 @@ body {
 .fi-root.fi-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Softer variant: the element resolves out of a blur rather than sliding up. */
+.fi-root.fi-blur {
+  transform: translateY(12px) scale(0.98);
+  filter: blur(10px);
+  transition:
+    opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.fi-root.fi-blur.fi-visible {
+  transform: none;
+  filter: blur(0);
+}
+
+/* ── Footer wordmark ─────────────────────────────────────────────────────── */
+/* Gradient-clipped text: the mark dissolves into the footer instead of sitting
+   on it as a flat tint. */
+.footer-wordmark {
+  background-image: linear-gradient(
+    180deg,
+    rgba(232, 131, 58, 0.16) 0%,
+    rgba(232, 131, 58, 0.05) 55%,
+    rgba(232, 131, 58, 0) 92%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Hero background spheres ─────────────────────────────────────────────── */
+/* Size tiers exist because the inset "shading" shadows have to scale with the
+   sphere; a single shared shadow reads as a flat disc at small sizes. */
+/* Two elements per sphere: the wrapper owns the entrance (transform/filter/opacity),
+   the inner element owns the resting look and the idle float. Animating both on one
+   element would mean the entrance and the float fighting over `transform`. */
+
+/* The perspective lives on the layer, so animating a child's translateZ makes the
+   browser derive the scale AND the convergence toward the vanishing point. Faking
+   that with scale() alone gives flat growth with no sense of travelling through space. */
+.hero-spheres {
+  perspective: 1200px;
+  perspective-origin: 68% 42%;
+}
+
+.hero-sphere-wrap {
+  position: absolute;
+  animation-timing-function: cubic-bezier(0.42, 0, 0.12, 1);
+  animation-fill-mode: both;
+  /* Base delay holds every settling sphere off screen until the fly-by has run.
+     The anchor sphere has no delay modifier and relied on this being non-zero. */
+  animation-delay: 150ms;
+}
+
+/* Depth tiers: the further out a sphere starts, the longer it takes to arrive. */
+.hero-sphere-wrap--far {
+  animation-name: hero-sphere-in-far;
+  animation-duration: 3400ms;
+}
+
+.hero-sphere-wrap--mid {
+  animation-name: hero-sphere-in-mid;
+  animation-duration: 2900ms;
+}
+
+.hero-sphere-wrap--near {
+  animation-name: hero-sphere-in-near;
+  animation-duration: 2450ms;
+}
+
+/* Back-to-front stagger, all of it after the fly-by tails off. */
+.hero-sphere-wrap--delay-1 { animation-delay: 300ms; }
+.hero-sphere-wrap--delay-2 { animation-delay: 520ms; }
+.hero-sphere-wrap--delay-3 { animation-delay: 780ms; }
+.hero-sphere-wrap--delay-4 { animation-delay: 1060ms; }
+.hero-sphere-wrap--delay-5 { animation-delay: 1380ms; }
+.hero-sphere-wrap--delay-6 { animation-delay: 1700ms; }
+
+/* Blur and opacity clear as the sphere closes in — atmospheric haze burning off. */
+@keyframes hero-sphere-in-far {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, -4200px);
+    filter: blur(30px);
+  }
+  30% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+@keyframes hero-sphere-in-mid {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, -3000px);
+    filter: blur(22px);
+  }
+  30% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+@keyframes hero-sphere-in-near {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, -2000px);
+    filter: blur(14px);
+  }
+  30% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+.hero-sphere-pointer {
+  display: block;
+  transform: translate3d(var(--sphere-x, 0px), var(--sphere-y, 0px), 0);
+}
+
+.hero-sphere {
+  display: block;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 30% 25%, #F6B989 0%, #E8833A 28%, #A9541F 62%, #52240B 100%);
+}
+
+.hero-sphere--xs {
+  width: 12px;
+  height: 12px;
+  box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.5), inset 1px 1px 1px rgba(255, 214, 170, 0.4), 0 2px 8px rgba(232, 131, 58, 0.25);
+}
+
+.hero-sphere--sm {
+  width: 22px;
+  height: 22px;
+  box-shadow: inset -2px -3px 5px rgba(0, 0, 0, 0.55), inset 1px 1px 2px rgba(255, 214, 170, 0.4), 0 4px 14px rgba(232, 131, 58, 0.22);
+}
+
+.hero-sphere--md {
+  width: 38px;
+  height: 38px;
+  box-shadow: inset -3px -4px 8px rgba(0, 0, 0, 0.55), inset 2px 2px 4px rgba(255, 214, 170, 0.38), 0 8px 22px rgba(232, 131, 58, 0.2);
+}
+
+.hero-sphere--lg {
+  width: 110px;
+  height: 110px;
+  box-shadow: inset -8px -10px 22px rgba(0, 0, 0, 0.6), inset 5px 5px 12px rgba(255, 214, 170, 0.32), 0 18px 46px rgba(232, 131, 58, 0.18);
+}
+
+.hero-sphere--xl {
+  width: 420px;
+  height: 420px;
+  box-shadow: inset -30px -38px 80px rgba(0, 0, 0, 0.6), inset 18px 18px 44px rgba(255, 214, 170, 0.28), 0 40px 120px rgba(232, 131, 58, 0.16);
+}
+
+/* Depth of field: further back = blurrier and dimmer. */
+.hero-sphere--mid {
+  filter: blur(3px);
+  opacity: 0.8;
+}
+
+.hero-sphere--far {
+  filter: blur(7px);
+  opacity: 0.55;
+}
+
+/* Deeper, less luminous copper — keeps the largest sphere from dominating. */
+.hero-sphere--deep {
+  background: radial-gradient(circle at 30% 25%, #C4784A 0%, #A0541F 28%, #63300F 62%, #240F04 100%);
+}
+
+/* Desaturated copper for spheres sitting deep in the scene. */
+.hero-sphere--dim {
+  background: radial-gradient(circle at 32% 26%, #8a5f3f 0%, #6b442a 30%, #3f2616 65%, #1c1009 100%);
+}
+
+@keyframes hero-float {
+  0%,
+  100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -18px, 0); }
+}
+
+.hero-sphere--float { animation: hero-float 16s ease-in-out infinite; }
+.hero-sphere--float-slow { animation: hero-float 26s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-sphere-wrap,
+  .hero-sphere--float,
+  .hero-sphere--float-slow {
+    animation: none;
+  }
+
+}
+
+
+/* ── Logo sketch draw-on ─────────────────────────────────────────────────── */
+/* Every path carries pathLength="1", so one dash value covers paths of any real
+   length — no measuring in JS. The solid leaf is stroked as an outline first and
+   its fill faded in afterwards, since a fill cannot be dashed. */
+.logo-sketch path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: logo-draw 1600ms ease-in-out forwards;
+}
+
+.logo-sketch .logo-sketch-fill {
+  fill-opacity: 0;
+  animation: logo-draw 2200ms ease-in-out forwards, logo-fill 1100ms ease-out 1700ms forwards;
+}
+
+@keyframes logo-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes logo-fill {
+  from { fill-opacity: 0; }
+  to { fill-opacity: 1; }
+}
+
+.logo-sketch path:nth-child(1) { animation-delay: 245ms; }
+.logo-sketch path:nth-child(2) { animation-delay: 330ms; }
+.logo-sketch path:nth-child(3) { animation-delay: 415ms; }
+.logo-sketch path:nth-child(4) { animation-delay: 500ms; }
+.logo-sketch path:nth-child(5) { animation-delay: 585ms; }
+.logo-sketch path:nth-child(6) { animation-delay: 670ms; }
+.logo-sketch path:nth-child(7) { animation-delay: 755ms; }
+.logo-sketch path:nth-child(8) { animation-delay: 840ms; }
+.logo-sketch path:nth-child(9) { animation-delay: 925ms; }
+.logo-sketch path:nth-child(10) { animation-delay: 1010ms; }
+.logo-sketch path:nth-child(11) { animation-delay: 1095ms; }
+.logo-sketch path:nth-child(12) { animation-delay: 1180ms; }
+.logo-sketch path:nth-child(13) { animation-delay: 1265ms; }
+.logo-sketch path:nth-child(14) { animation-delay: 1350ms; }
+.logo-sketch path:nth-child(15) { animation-delay: 1435ms; }
+.logo-sketch path:nth-child(16) { animation-delay: 1520ms; }
+.logo-sketch path:nth-child(17) { animation-delay: 1605ms; }
+.logo-sketch path:nth-child(18) { animation-delay: 1690ms; }
+.logo-sketch path:nth-child(19) { animation-delay: 1775ms; }
+.logo-sketch path:nth-child(20) { animation-delay: 1860ms; }
+
+/* The leaf outline leads; its own fill delay is relative to that start. */
+.logo-sketch .logo-sketch-fill { animation-delay: 0ms, 1700ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-sketch path {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .logo-sketch .logo-sketch-fill {
+    fill-opacity: 1;
+    animation: none;
+  }
+}
+
+/* Logo arrives from depth while its paths draw. Kept on the <svg> itself so it
+   composes with the per-path dash animation rather than competing with it. */
+.logo-sketch {
+  animation: logo-enter 1500ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  transform-origin: 50% 50%;
+}
+
+@keyframes logo-enter {
+  from {
+    opacity: 0;
+    transform: perspective(900px) rotateY(-24deg) translate3d(0, 26px, -180px);
+    filter: blur(16px);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(900px) rotateY(0deg) translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-sketch {
+    animation: none;
+  }
+}
+
+/* Location beacon: a single ring expanding out of the pin. Deliberately slow and
+   low-contrast — it should register as a live signal, not draw the eye off the h1. */
+.hero-beacon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-beacon::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 9999px;
+  border: 1px solid rgba(232, 131, 58, 0.55);
+  animation: hero-beacon-pulse 2800ms cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+
+@keyframes hero-beacon-pulse {
+  0% {
+    transform: scale(0.55);
+    opacity: 0.75;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-beacon::before {
+    animation: none;
+    opacity: 0.4;
+  }
+}
+
+/* ── Name equation: row → rail morph ─────────────────────────────────────── */
+/* The expanded rail is the real DOM, so no-JS and reduced-motion readers get the
+   readable layout. The morph runs backwards from there: NameEquation measures the
+   expanded boxes, works out where each one sits in the compact row, and scrubs the
+   inverse transform back to identity as the section scrolls. Values arrive as
+   custom properties rather than inline styles, matching the sphere field. */
+/* Each node is a full-width row that gets scaled up and pushed right to reach its
+   slot in the compact row, so its trailing (transparent) text column hangs far past
+   the rail and would put a horizontal scrollbar on the page. Clipped rather than
+   hidden: `clip` does not create a scroll container, so the sticky stage above it
+   keeps working. The visible sketches never reach this edge. */
+.ingredient-rail {
+  overflow-x: clip;
+}
+
+.ingredient-node {
+  transform: translate3d(var(--node-x, 0px), var(--node-y, 0px), 0) scale(var(--node-s, 1));
+  transform-origin: 0 0;
+}
+
+.ingredient-node__body {
+  opacity: var(--node-body, 1);
+}
+
+/* The caption doubles as the row label, so it runs opposite the body copy. */
+.ingredient-node__caption {
+  opacity: var(--node-caption, 0);
+}
+
+.ingredient-plus {
+  position: absolute;
+  top: var(--plus-y, 0px);
+  left: var(--plus-x, 0px);
+  width: var(--plus-size, 40px);
+  height: var(--plus-size, 40px);
+  opacity: var(--plus-o, 0);
+}
+
+.ingredient-rail-line {
+  position: absolute;
+  top: var(--rail-y, 0px);
+  left: var(--rail-x, 0px);
+  width: 1px;
+  height: var(--rail-h, 0px);
+  transform: scaleY(var(--rail-p, 0));
+  transform-origin: 50% 0;
+  background: linear-gradient(180deg, #E8833A 0%, rgba(232, 131, 58, 0.15) 100%);
+}
+
+/* Without the morph there is nothing to scrub, so the pinned runway would only
+   add a long dead scroll. Unlayered, so it outranks the md: utilities. */
+@media (prefers-reduced-motion: reduce) {
+  .name-runway {
+    height: auto;
+  }
+
+  .name-stage {
+    position: static;
+    height: auto;
+  }
+
+  .ingredient-node {
+    transform: none;
+  }
+
+  .ingredient-node__body,
+  .ingredient-node__caption {
+    opacity: 1;
+  }
+
+  .ingredient-plus {
+    display: none;
+  }
+
+  .ingredient-rail-line {
+    transform: scaleY(1);
+  }
+}
+
+/* ── Compensation mix ────────────────────────────────────────────────────── */
+/* Widths arrive as a custom property per segment, so switching mixes is a plain
+   width transition rather than a re-layout. */
+.mix-seg {
+  width: var(--seg-w, 0%);
+  transition: width 850ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Shown only where the segment can hold the word; the fit test lives in the
+   component, since it needs the measured text width. */
+.mix-label {
+  opacity: 0;
+  transition: opacity 350ms ease;
+}
+
+.mix-label.is-shown {
+  opacity: 1;
+}
+
+.mix-name {
+  animation: mix-name-in 500ms ease both;
+}
+
+@keyframes mix-name-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mix-seg,
+  .mix-label {
+    transition: none;
+  }
+
+  .mix-name {
+    animation: none;
+  }
+}
+
+/* ── Map beacon ──────────────────────────────────────────────────────────── */
+/* Two rings on a staggered loop, so the pulse reads as continuous rather than
+   as a single ping that restarts. */
+.map-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1px solid #E8833A;
+  animation: map-pulse 3s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+}
+
+.map-pulse--offset {
+  animation-delay: 1.5s;
+}
+
+@keyframes map-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(4.6);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-pulse {
+    animation: none;
+    transform: scale(2.2);
+    opacity: 0.3;
+  }
+
+  .map-pulse--offset {
+    display: none;
+  }
+}
+
+/* ── Scroll hint ─────────────────────────────────────────────────────────── */
+/* Shown only while the name section holds the viewport, to say that scrolling is
+   still doing something. Opacity is driven per frame from the morph progress, so
+   there is no transition here — it would lag behind the scrub. */
+.scroll-hint {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  z-index: 40;
+  transform: translateX(-50%);
+  opacity: var(--hint-o, 1);
+  pointer-events: none;
+}
+
+.scroll-hint__track {
+  display: flex;
+  justify-content: center;
+  width: 26px;
+  height: 40px;
+  padding-top: 8px;
+  border: 1px solid rgba(232, 131, 58, 0.45);
+  border-radius: 9999px;
+  background: rgba(11, 11, 18, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.scroll-hint__dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: #E8833A;
+  animation: scroll-hint-dot 1.8s cubic-bezier(0.4, 0, 0.3, 1) infinite;
+}
+
+@keyframes scroll-hint-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint {
+    display: none;
+  }
 }

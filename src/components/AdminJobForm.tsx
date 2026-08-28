@@ -4,6 +4,7 @@ import { useState, type FormEvent, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { JobFieldErrors } from "@/types/job";
 import { RichTextEditor } from "@/components/RichTextEditor";
+import { CloseIcon } from "@/components/icons";
 
 interface InitialJob {
   id: string;
@@ -227,7 +228,7 @@ function TagField({ id, label, placeholder, values, onChange, error, suggestion 
               <li key={value} className="inline-flex items-center gap-1.5 rounded-full bg-[#e8d8c8] py-1 pl-3 pr-1.5 text-xs font-medium text-[#5a4535]">
                 {value}
                 <button type="button" onClick={() => onChange(values.filter((item) => item !== value))} className="flex h-5 w-5 items-center justify-center rounded-full hover:bg-[#c4a98e]" aria-label={`Remove ${value}`}>
-                  ×
+                  <CloseIcon size={11} />
                 </button>
               </li>
             ))}

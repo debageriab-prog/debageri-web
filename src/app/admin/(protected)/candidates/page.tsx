@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowUpRightIcon } from "@/components/icons";
 import { CandidateStatusEditor } from "@/components/CandidateStatusEditor";
 import { DeleteCandidateButton } from "@/components/DeleteCandidateButton";
 import { getApplications } from "@/lib/applications";
@@ -121,7 +122,7 @@ export default async function CandidatesPage({
                   <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#7a5e4a]">
                     <a
                       href={`mailto:${application.email}`}
-                      className="underline underline-offset-2"
+                      className="inline-flex items-center gap-1 underline underline-offset-2"
                     >
                       {application.email}
                     </a>
@@ -137,7 +138,7 @@ export default async function CandidatesPage({
                       rel="noreferrer"
                       className="underline underline-offset-2"
                     >
-                      LinkedIn ↗
+                      LinkedIn <ArrowUpRightIcon />
                     </a>
                   </div>
                   <p className="mt-4 text-xs text-[#9a7a63]">
@@ -150,9 +151,9 @@ export default async function CandidatesPage({
                     href={`/api/admin/applications/${application.id}/resume`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-lg border border-[#c4a98e] px-4 py-2.5 text-center text-sm font-semibold text-[#5a4535]"
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#c4a98e] px-4 py-2.5 text-center text-sm font-semibold text-[#5a4535]"
                   >
-                    Open Resume ↗
+                    Open Resume <ArrowUpRightIcon />
                   </a>
                   <CandidateStatusEditor
                     key={`${application.id}-${application.statusUpdatedAt?.getTime() ?? 0}`}

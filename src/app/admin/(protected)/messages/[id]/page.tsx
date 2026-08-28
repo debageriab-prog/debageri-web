@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeftIcon, ArrowUpRightIcon } from "@/components/icons";
 import { notFound } from "next/navigation";
 import { FieldValue } from "firebase-admin/firestore";
 import { requireAdminSession } from "@/lib/admin-session";
@@ -31,7 +32,7 @@ export default async function MessageDetailPage({ params }: { params: Promise<{ 
   return (
     <main className="mx-auto max-w-4xl px-6 py-10 md:py-14">
       <Link href="/admin/messages" className="inline-flex items-center gap-2 text-sm font-medium text-[#7a5e4a] hover:text-[#3D3027]">
-        <span aria-hidden="true">←</span> Back to messages
+        <ArrowLeftIcon /> Back to messages
       </Link>
 
       <article className="mt-6 overflow-hidden rounded-2xl border border-[#e8d8c8] bg-[#fdfaf6]">
@@ -59,7 +60,7 @@ export default async function MessageDetailPage({ params }: { params: Promise<{ 
 
         <footer className="flex flex-col gap-4 border-t border-[#e8d8c8] bg-[#F7F2EA] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <a href={mailto} className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#3D3027] px-5 py-2.5 text-sm font-semibold text-[#F7F2EA] transition-colors hover:bg-[#5a4535]">
-            Reply by email <span aria-hidden="true">↗</span>
+            Reply by email <ArrowUpRightIcon />
           </a>
           <div className="flex flex-wrap gap-2">
             {message.status !== "read" && <StatusButton id={id} status="read" label="Mark read" />}

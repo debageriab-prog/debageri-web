@@ -19,21 +19,25 @@ import Link from "next/link";
 
 // ViewBox coordinates that tightly crop the logo content from the A4 canvas:
 //   Full logo (mark + wordmark): x=125 y=220 w=557 h=165
-//   Mark only:                   x=125 y=220 w=153 h=165
+//   Mark only: measured content is x=147 y=219.9 w=115.1 h=155, so the old box both
+//   clipped the antenna tip (content starts above y=220, and the 0.82 stroke extends
+//   past that again) and padded 22 units of dead space onto the left.
 const FULL_VIEWBOX = "125 220 557 165";
-const MARK_VIEWBOX = "125 220 153 165";
+const MARK_VIEWBOX = "144.5 217.4 120.1 160";
+const MARK_ASPECT = 160 / 120.1;
 
 // ── Mark paths ────────────────────────────────────────────────────────────────
 // The mark consists of:
 //   1. One large filled path (.st0) for the leaf/body/organic right half
 //   2. A group of stroked paths (.st1) for the PCB circuit traces on the left half
 
-function MarkPaths({ color = "#3D3027" }: { color?: string }) {
+function MarkPaths({ color = "#3D3027", sketch = false }: { color?: string; sketch?: boolean }) {
   const strokeProps = {
     stroke: color,
     strokeMiterlimit: 10,
     strokeWidth: 0.82,
     fill: "none",
+    ...(sketch ? { pathLength: 1 } : {}),
   };
 
   return (
@@ -41,6 +45,9 @@ function MarkPaths({ color = "#3D3027" }: { color?: string }) {
       {/* Filled leaf / body */}
       <path
         fill={color}
+        {...(sketch
+          ? { stroke: color, strokeWidth: 0.82, pathLength: 1, className: "logo-sketch-fill" }
+          : {})}
         d="M203.66,236.75c4.95-6.25,12.5-9.6,20.58-11.39.48-1.08,1-2.07,2.36-2.37,4.97-1.1,5.32,5.88.71,5.58-1.12-.07-1.69-.85-2.31-.99-.54-.12-5.15,1.32-6.01,1.62-6.2,2.17-11.66,5.93-14.54,11.49,18.47.6,35.25,10.86,45.04,24.73,11.43,16.2,15.24,36.97,10.82,55.82-4.83,20.58-19.36,41.55-41.11,50.12-4.11,1.62-11.64,3.73-16.07,3.53-1.36-.06-1.92-.72-2.04-1.91-.68-6.97.53-14.84,0-21.9.15-36.1-.07-72.24,0-108.41-4.15-6.7-11.32-11.63-19.3-14.09-.58-.18-3.48-1.05-3.83-.98-.16.03-.63.48-.92.61-3.34,1.5-6.3-2.12-3.91-4.44,1.81-1.76,5.17-.79,5.55,1.59,7.26,1.26,13.92,4.65,19.21,9.28l3.04,3.14c.15-4.18-.32-8.31-.48-12.48-.06-.31-1.01-.79-1.32-1.28-1.64-2.65,2.01-5.3,4.6-3.61,1.55,1.01,1.55,3.12.23,4.3-.24.22-.77.18-.79.59l.48,11.46ZM204.94,243.9v32.1l34.74-8.28c2.71-.16,2.85,1.57,1.83,3.42-2.57,4.67-8.5,9.35-13.34,12.07-6.93,3.9-15.07,6.68-23.22,7.38v10.94l34.9-8.43c1.45-.27,2.49.42,2.45,1.79-.03,1.02-1.46,3.01-2.12,3.91-5.45,7.31-17.49,13.42-26.7,15.82-2.73.71-5.67,1.36-8.53,1.35v11.09c11.92-2.43,23.6-5.69,35.38-8.58,3.55.55,1.61,3.3.42,5.07-3.37,4.99-9.48,9.28-15.02,12.15-6.34,3.28-13.46,5.62-20.78,6.1v29.62c18.45-1.78,33.41-14.26,42.34-28.36,12.62-19.94,14.93-43.57,5.34-65.03-8.14-18.2-25.41-32.73-47.67-34.15ZM205.42,279.22v8.17c6.32-.6,12.67-2.74,18.22-5.52,5-2.51,9.71-5.83,13.03-10.09l-31.25,7.44ZM205.42,312.78c1.31.04,2.6-.24,3.88-.48,7.88-1.51,16.51-5.44,22.64-10.17,1.9-1.46,3.76-3.08,5.05-5.03l-31.57,7.73v7.95ZM205.42,330.29v8.32c7.97-.8,15.63-3.61,22.17-7.76,3.45-2.19,6.9-4.87,9.25-8.07l-31.41,7.51Z"
       />
 
@@ -103,22 +110,23 @@ interface LogoMarkProps {
   size?: number;
   color?: string;
   className?: string;
+  /** Draw the mark on with a stroke-dash sketch animation instead of showing it whole. */
+  sketch?: boolean;
 }
 
 /** Just the circular mark, used as a hero graphic and decorative element. */
-export function LogoMark({ size = 48, color = "#3D3027", className }: LogoMarkProps) {
-  // Mark aspect ratio derived from viewBox "125 220 153 165"
+export function LogoMark({ size = 48, color = "#3D3027", className, sketch = false }: LogoMarkProps) {
   return (
     <svg
       width={size}
-      height={Math.round(size * (165 / 153))}
+      height={Math.round(size * MARK_ASPECT)}
       viewBox={MARK_VIEWBOX}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={sketch ? `logo-sketch ${className ?? ""}` : className}
       aria-hidden="true"
     >
-      <MarkPaths color={color} />
+      <MarkPaths color={color} sketch={sketch} />
     </svg>
   );
 }
