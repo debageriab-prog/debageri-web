@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@/components/icons";
-import { EMAIL_VARIABLES } from "@/lib/email-templates";
-import { getEmailTemplates } from "@/lib/email-settings";
-import { updateEmailTemplate } from "../actions";
+import { CONTACT_REPLY_VARIABLES, EMAIL_VARIABLES } from "@/lib/email-templates";
+import { getContactReplyTemplate, getEmailTemplates } from "@/lib/email-settings";
+import { updateContactReplyTemplate, updateEmailTemplate } from "../actions";
+import { ContactReplyTemplateEditor } from "@/components/ContactReplyTemplateEditor";
 import { EmailTemplateEditor } from "@/components/EmailTemplateEditor";
 
 export const metadata: Metadata = { title: "Email templates" };
@@ -13,8 +14,9 @@ export default async function EmailTemplatesPage({
 }: {
   searchParams: Promise<{ saved?: string }>;
 }) {
-  const [templates, query] = await Promise.all([
+  const [templates, contactReplyTemplate, query] = await Promise.all([
     getEmailTemplates(),
+    getContactReplyTemplate(),
     searchParams,
   ]);
   return (
@@ -27,14 +29,14 @@ export default async function EmailTemplatesPage({
       </Link>
       <div className="mt-6">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9a7a63]">
-          Candidate communication
+          Email communication
         </p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">
           Email templates
         </h1>
         <p className="mt-2 max-w-2xl text-[#7a5e4a]">
-          Create a thoughtful starting point for every status update. You can
-          still edit each message before it is sent.
+          Create a thoughtful starting point for candidate updates and contact
+          replies. You can still edit each message before it is sent.
         </p>
       </div>
       <aside className="mt-8 rounded-2xl border border-[#e8d8c8] bg-[#f0e8dc] p-5">
@@ -62,6 +64,16 @@ export default async function EmailTemplatesPage({
             action={updateEmailTemplate}
           />
         ))}
+        <div className="pt-5">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#9a7a63]">
+            Contact messages · variables: {CONTACT_REPLY_VARIABLES.map((variable) => `{{${variable}}}`).join(", ")}
+          </p>
+          <ContactReplyTemplateEditor
+            template={contactReplyTemplate}
+            saved={query.saved === "contact-reply"}
+            action={updateContactReplyTemplate}
+          />
+        </div>
       </div>
     </main>
   );

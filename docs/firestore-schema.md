@@ -114,6 +114,8 @@ interface ContactMessage {
   updatedAt: Timestamp;
   statusUpdatedAt: Timestamp | null;
   statusUpdatedBy: string | null; // Admin UID
+  lastEmailSentAt: Timestamp | null;
+  lastEmailSubject: string | null;
   expiresAt: Timestamp; // createdAt + 12 months
 }
 ```
@@ -146,6 +148,7 @@ interface EmailSettingsDocument {
   replyTo: string;
   adminNotificationEmail: string; // Receives new-application notifications
   templates: Record<ApplicationStatus, { subject: string; body: string }>;
+  contactReplyTemplate: { subject: string; body: string };
   updatedAt: Timestamp;
   updatedBy: string;
 }
