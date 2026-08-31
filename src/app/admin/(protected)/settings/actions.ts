@@ -3,7 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdminSession } from "@/lib/admin-session";
-import { saveEmailSettings, saveEmailTemplate } from "@/lib/email-settings";
+import {
+  saveContactReplyTemplate,
+  saveEmailSettings,
+  saveEmailTemplate,
+} from "@/lib/email-settings";
 import { emailHtmlToText, sanitizeEmailHtml } from "@/lib/email-rich-text";
 import {
   APPLICATION_STATUSES,
@@ -76,4 +80,18 @@ export async function updateEmailTemplate(formData: FormData) {
   revalidatePath("/admin/settings/email-templates");
   revalidatePath("/admin/candidates");
   redirect(`/admin/settings/email-templates?saved=${status}`);
+}
+
+export async function updateContactReplyTemplate(formData: FormData) {
+  const admin = await requireAdminSession();
+  const body = sanitizeEmailHtml(required(formData, "body", 10_000));
+  if (!emailHtmlToText(body)) throw new Error("Enter an email message.");
+  await saveContactReplyTemplate(
+    required(formData, "subject", 200),
+    body,
+    admin.uid,
+  );
+  revalidatePath("/admin/settings/email-templates");
+  revalidatePath("/admin/messages");
+  redirect("/admin/settings/email-templates?saved=contact-reply");
 }

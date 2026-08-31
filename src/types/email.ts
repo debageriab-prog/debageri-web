@@ -19,6 +19,17 @@ export interface EmailTemplate {
   body: string;
 }
 
+export interface ContactReplyTemplate {
+  subject: string;
+  body: string;
+}
+
+export interface ContactReplyMergeData {
+  contactName: string;
+  contactEmail: string;
+  companyName: string;
+}
+
 export interface EmailMergeData {
   candidateFirstName: string;
   candidateLastName: string;

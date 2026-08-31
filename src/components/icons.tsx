@@ -108,6 +108,21 @@ export function CloseIcon({ size, className }: IconProps = {}) {
   );
 }
 
+export function TrashIcon({ size, className }: IconProps = {}) {
+  return (
+    <svg
+      width={iconSize(size)}
+      height={iconSize(size)}
+      viewBox="0 0 14 14"
+      fill="none"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M2.5 4h9M5 4V2.5h4V4m1.5 0-.5 8H4L3.5 4M5.5 6.5v3M8.5 6.5v3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function ChevronDownIcon({ size, className }: IconProps = {}) {
   return (
     <svg

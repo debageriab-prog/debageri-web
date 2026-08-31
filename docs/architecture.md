@@ -96,7 +96,9 @@ debageri-web/
 2. The Route Handler verifies App Check, validates the payload and checks the honeypot.
 3. The Firebase Admin SDK writes an `unread` message with a 12-month expiry.
 4. An authenticated admin views messages under `/admin/messages`.
-5. Opening a message marks it read; the admin can then mark it replied or ignored.
+5. Opening a message marks it read. The admin can reply through the configured
+   SMTP connection using an editable template, mark it ignored, or permanently
+   delete it after confirmation.
 
 ## Job publishing flow
 

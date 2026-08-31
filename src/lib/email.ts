@@ -27,6 +27,14 @@ export async function sendCandidateEmail(
   });
 }
 
+export async function sendContactReply(
+  to: string,
+  subject: string,
+  body: string,
+) {
+  await sendCandidateEmail(to, subject, body);
+}
+
 export async function sendAdminApplicationNotification(input: {
   candidateName: string;
   candidateEmail: string;

@@ -2,9 +2,16 @@ import "server-only";
 
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 import { getAdminDb } from "@/lib/firebase/admin";
-import { DEFAULT_EMAIL_TEMPLATES } from "@/lib/email-templates";
+import {
+  DEFAULT_CONTACT_REPLY_TEMPLATE,
+  DEFAULT_EMAIL_TEMPLATES,
+} from "@/lib/email-templates";
 import type { ApplicationStatus } from "@/types/application";
-import type { EmailSettings, EmailTemplate } from "@/types/email";
+import type {
+  ContactReplyTemplate,
+  EmailSettings,
+  EmailTemplate,
+} from "@/types/email";
 
 const SETTINGS_REF = () => getAdminDb().collection("appSettings").doc("email");
 
@@ -140,6 +147,44 @@ export async function saveEmailTemplate(
   await SETTINGS_REF().set(
     {
       templates: { [status]: { subject, body } },
+      updatedAt: new Date(),
+      updatedBy: adminUid,
+    },
+    { merge: true },
+  );
+}
+
+export async function getContactReplyTemplate(): Promise<ContactReplyTemplate> {
+  const data = (await SETTINGS_REF().get()).data();
+  const saved = data?.contactReplyTemplate;
+  if (!saved || typeof saved !== "object") {
+    return {
+      ...DEFAULT_CONTACT_REPLY_TEMPLATE,
+      body: asHtml(DEFAULT_CONTACT_REPLY_TEMPLATE.body),
+    };
+  }
+  const candidate = saved as Record<string, unknown>;
+  return {
+    subject:
+      typeof candidate.subject === "string"
+        ? candidate.subject
+        : DEFAULT_CONTACT_REPLY_TEMPLATE.subject,
+    body: asHtml(
+      typeof candidate.body === "string"
+        ? candidate.body
+        : DEFAULT_CONTACT_REPLY_TEMPLATE.body,
+    ),
+  };
+}
+
+export async function saveContactReplyTemplate(
+  subject: string,
+  body: string,
+  adminUid: string,
+) {
+  await SETTINGS_REF().set(
+    {
+      contactReplyTemplate: { subject, body },
       updatedAt: new Date(),
       updatedBy: adminUid,
     },
